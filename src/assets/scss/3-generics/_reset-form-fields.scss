@@ -1,0 +1,39 @@
+/* Resets radio button & checkbox button default styles */
+input[type="radio"],
+input[type="checkbox"]{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Remove default search icon from search input */
+input[type='search'] {
+    &::-webkit-search-results-decoration,
+    &::-webkit-search-results-button,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-decoration {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+}
+
+/* Remove password icon from microsoft edge */
+input[type="password"] {
+    &::-ms-reveal,
+    &::-ms-clear {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+}
+/* Remove up & down arrow from number input */
+input[type='number'] {
+    -moz-appearance:textfield;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+}

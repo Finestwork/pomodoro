@@ -1,0 +1,14 @@
+@use 'sass:map';
+@use '../1-settings/css-properties/general-properties/font-family';
+@use '../1-settings/css-properties/font-size/major-second';
+@use '../1-settings/css-properties/colors/text';
+@use '../1-settings/css-properties/font-family/roboto-flex';
+@use '../2-tools/functions/convertions/pixels';
+
+body{
+    overflow-x: hidden;
+    font-family: proxima-soft.$full-support; // Credits to TailwindCss
+    line-height: 1.5;
+    font-size: pixels.toRem(major-second.$base);
+    color: map.get(text.$main, 910);
+}

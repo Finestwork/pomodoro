@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use '../1-settings/css-properties/colors/text';
+@use '../1-settings/css-properties/colors/safety';
+@use '../1-settings/css-properties/colors/main';
+
+@mixin base($color-scheme, $color-scheme-map){
+    @for $i from 1 through 9{
+        $weight: $i * 100;
+        .text--#{$color-scheme}--#{$weight}{
+            color: map.get($color-scheme-map, $weight) !important;
+        }
+    }
+    .text--#{$color-scheme}--50{
+        color: map.get($color-scheme-map, 50) !important;
+    }
+}
+
+
+@include base('primary', main.$primary);
+@include base('secondary', main.$secondary);
+@include base('text', text.$main);
+@include base('danger', safety.$danger);
+@include base('success', safety.$success);
+@include base('warning', safety.$warning);

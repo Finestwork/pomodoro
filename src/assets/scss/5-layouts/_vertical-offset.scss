@@ -1,0 +1,7 @@
+@use '../2-tools/mixins/css-properties/padding';
+
+.vertical-offset{
+    @include padding.vertical((
+        xsm: 30
+    ));
+}

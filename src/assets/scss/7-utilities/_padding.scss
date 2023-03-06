@@ -1,0 +1,44 @@
+@use '../2-tools/functions/convertions/pixels';
+@use '../2-tools/mixins/media-query/breakpoint';
+
+$breakpoint-list: ['xsm', 'sm', 'md', 'lg', 'xl', 'xxl'];
+$base-size: 1;
+$incrementor: 2;
+@mixin base($cls, $propArr){
+    @each $breakpoint in $breakpoint-list{
+        $selector: '';
+
+        @if($breakpoint == 'xsm'){
+            $selector: $cls;
+        }@else{
+            $selector: #{$cls}-#{$breakpoint}
+        }
+
+        @include breakpoint.checker($breakpoint){
+            @for $i from 0 through 100{
+                @if($i == 0){
+                    .#{$selector}-#{$i}{
+                        @each $prop in $propArr{
+                            #{$prop}: 0 !important;
+                        }
+                    }
+                }@else{
+                    .#{$selector}-#{$i}{
+                        @each $prop in $propArr{
+                            #{$prop}: pixels.toRem(($base-size * $i) + $incrementor) !important;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+}
+@include base('p', 'padding');
+@include base('pt', 'padding-top');
+@include base('pr', 'padding-right');
+@include base('pb', 'padding-bottom');
+@include base('pl', 'padding-left');
+@include base('px', ['padding-left', 'padding-right']);
+@include base('py', ['padding-top', 'padding-bottom']);

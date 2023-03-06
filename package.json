@@ -1,0 +1,32 @@
+{
+  "name": "pomodoro",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "normalize.css": "^8.0.1",
+    "sass": "^1.58.3",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^5.0.0",
+    "@rushstack/eslint-patch": "^1.2.0",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/eslint-config-prettier": "^7.1.0",
+    "autoprefixer": "^10.4.13",
+    "cssnano": "^5.1.15",
+    "cssnano-preset-advanced": "^5.3.10",
+    "eslint": "^8.34.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.4",
+    "vite": "^4.1.4"
+  }
+}

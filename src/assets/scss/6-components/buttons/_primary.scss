@@ -1,0 +1,15 @@
+@use 'sass:map';
+@use '../../1-settings/css-properties/colors/main';
+@use '../../1-settings/css-properties/font-size/major-second';
+@use '../../2-tools/functions/convertions/pixels';
+
+.btn{
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 7px;
+  background-color: map.get(main.$primary, 500);
+  font-size: pixels.toRem(map.get(major-second.$scale, 3));
+  padding: pixels.toRem(10);
+}

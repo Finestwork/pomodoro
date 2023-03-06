@@ -1,0 +1,6 @@
+@use '../2-tools/functions/convertions/pixels';
+
+html{
+    box-sizing: border-box;
+    font-size: pixels.toPercentage(10, 16); // Converts 10px to 62.5%
+}

@@ -1,0 +1,74 @@
+@use '../2-tools/functions/convertions/pixels';
+@use '../2-tools/mixins/media-query/breakpoint';
+
+$breakpoint-list: ['xsm', 'sm', 'md', 'lg', 'xl', 'xxl'];
+$base-size: 1;
+$incrementor: 2;
+@mixin base($cls, $propArr){
+    @each $breakpoint in $breakpoint-list{
+        $selector: '';
+
+        @if($breakpoint == 'xsm'){
+            $selector: $cls;
+        }@else{
+            $selector: #{$cls}-#{$breakpoint}
+        }
+
+        @include breakpoint.checker($breakpoint){
+            @for $i from 0 through 100{
+                @if($i == 0){
+                    .#{$selector}-#{$i}{
+                        @each $prop in $propArr{
+                            #{$prop}: 0 !important;
+                        }
+                    }
+                }@else{
+                    .#{$selector}-#{$i}{
+                        @each $prop in $propArr{
+                            #{$prop}: pixels.toRem(($base-size * $i) + $incrementor) !important;
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+
+}
+@include base('m', 'margin');
+@include base('mt', 'margin-top');
+@include base('mr', 'margin-right');
+@include base('mb', 'margin-bottom');
+@include base('ml', 'margin-left');
+@include base('mx', ['margin-left', 'margin-right']);
+@include base('my', ['margin-top', 'margin-bottom']);
+
+/* Generate mx-auto & my-auto */
+@each $breakpoint in $breakpoint-list{
+    @include breakpoint.checker($breakpoint){
+        @if($breakpoint == 'xsm'){
+            .mx-auto{
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }@else{
+            .mx-auto-#{$breakpoint}{
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        @if($breakpoint == 'xsm'){
+            .my-auto{
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }@else{
+            .my-auto-#{$breakpoint}{
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+        }
+    }
+}

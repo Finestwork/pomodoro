@@ -1,0 +1,14 @@
+@use '../2-tools/mixins/media-query/breakpoint';
+
+$breakpoint-list: ['sm', 'md', 'lg','xl', 'xxl'];
+
+.text-center{
+	text-align: center !important;
+}
+@each $breakpoint in $breakpoint-list{
+	@include breakpoint.checker($breakpoint){
+		.text-center-#{$breakpoint}{
+			text-align: center !important;
+		}
+	}
+}
