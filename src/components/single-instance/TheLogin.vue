@@ -41,7 +41,8 @@
     </div>
 
     <p class="login__no-account">
-      Don't have an account yet? <a class="login__register-link" href="#">Signup here</a>
+      Don't have an account yet?
+      <router-link class="login__register-link" :to="{ name: 'Signup' }">Signup here</router-link>
     </p>
   </div>
 </template>

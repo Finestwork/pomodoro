@@ -17,7 +17,14 @@
         </div>
       </div>
       <div class="home__right">
-        <TheLogin />
+        <Transition
+          @before-enter="onBeforeEnter"
+          @enter="onEnter"
+          @before-leave="onBeforeLeave"
+          @leave="onLeave"
+        >
+          <Component :is="getRoute" />
+        </Transition>
       </div>
     </div>
   </main>
@@ -25,10 +32,85 @@
 
 <script>
 import TheLogin from '@/components/single-instance/TheLogin.vue';
+import TheSignup from '@/components/single-instance/TheSignup.vue';
+import anime from 'animejs';
 
+const routes = {
+  '/login': TheLogin,
+  '/signup': TheSignup
+};
 export default {
   components: {
     TheLogin
+  },
+  data() {
+    return {
+      beforeEnterLeft: 0,
+      beforeEnterTop: 0,
+      beforeEnterWidth: 0,
+      beforeEnterHeight: 0
+    };
+  },
+  methods: {
+    onBeforeLeave(el) {
+      const { height, width, top } = el.getBoundingClientRect();
+      const left = el.offsetLeft;
+
+      Object.assign(el.style, {
+        position: 'absolute',
+        top: `${top}px`,
+        left: `${left}px`,
+        width: `${width}px`,
+        height: `${height}px`
+      });
+    },
+
+    onLeave(el, done) {
+      anime({
+        targets: el,
+        left: '-100%',
+        duration: 450,
+        easing: 'easeOutExpo',
+        complete: done
+      });
+    },
+
+    onBeforeEnter(el) {
+      Object.assign(el.style, {
+        opacity: 0
+      });
+    },
+
+    onEnter(el, done) {
+      const { height, width, top } = el.getBoundingClientRect();
+      const left = el.offsetLeft;
+
+      Object.assign(el.style, {
+        position: 'absolute',
+        top: `${top}px`,
+        left: `${el.parentElement.offsetWidth}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+        opacity: 1
+      });
+
+      anime({
+        targets: el,
+        left: `${left}px`,
+        duration: 450,
+        easing: 'easeOutExpo',
+        complete: () => {
+          done();
+          el.style = null;
+        }
+      });
+    }
+  },
+  computed: {
+    getRoute() {
+      const PATH_NAME = this.$route.path;
+      return routes[PATH_NAME];
+    }
   }
 };
 </script>
@@ -120,6 +202,8 @@ export default {
   &__right {
     margin-left: auto;
     margin-right: auto;
+    overflow: hidden;
+    position: relative;
     @include width-and-height.set((
         xsm: (width: 100%, maxWidth: 450px),
         lg: (width: 50%, maxWidth: unset)

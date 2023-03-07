@@ -6,6 +6,16 @@ const routes = [
     path: '/',
     name: 'LandingPage',
     component: LandingPage
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LandingPage
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: LandingPage
   }
 ];
 
