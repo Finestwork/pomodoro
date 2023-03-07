@@ -10,7 +10,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "normalize.css": "^8.0.1",
+    "lottie-web": "^5.10.2",
     "sass": "^1.58.3",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"

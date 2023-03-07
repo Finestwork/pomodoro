@@ -12,6 +12,8 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   rules: {
-    "no-console": 2
+    "no-console": 2,
+    "vue/multi-word-component-names": 0,
+    "no-undef": 0
   }
 }
