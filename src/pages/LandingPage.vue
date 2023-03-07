@@ -27,12 +27,16 @@
         </Transition>
       </div>
     </div>
+
+    <!-- If logged in -->
+    <TheHomepage v-if="false" />
   </main>
 </template>
 
 <script>
 import TheLogin from '@/components/single-instance/TheLogin.vue';
 import TheSignup from '@/components/single-instance/TheSignup.vue';
+import TheHomepage from '@/components/single-instance/TheHomepage.vue';
 import anime from 'animejs';
 
 const routes = {
@@ -41,7 +45,7 @@ const routes = {
 };
 export default {
   components: {
-    TheLogin
+    TheHomepage
   },
   data() {
     return {

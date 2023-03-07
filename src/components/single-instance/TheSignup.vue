@@ -55,6 +55,7 @@
 <script>
 import BaseTextInput from '@/components/global/forms/BaseTextInput.vue';
 import BasePlayfulButton from '@/components/global/buttons/BasePlayfulButton.vue';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export default {
   components: {
@@ -72,7 +73,23 @@ export default {
   },
   methods: {
     submitForm() {
-      this.toggleBtnLoading = !this.toggleBtnLoading;
+      this.toggleBtnLoading = true;
+
+      createUserWithEmailAndPassword(getAuth(), this.emailText, this.passwordText)
+        .then((res) => {
+          this.toggleBtnLoading = false;
+
+          console.log(res);
+
+          updateProfile(getAuth().currentUser, { displayName: this.usernameText }).then((res) => {
+            console.log(res);
+            // Success
+          });
+        })
+        .catch((err) => {
+          this.toggleBtnLoading = false;
+          console.log(err);
+        });
     }
   }
 };
@@ -105,6 +122,7 @@ export default {
   }
 
   &__form{
+    max-width: 650px;
     .form{
       &__username,
       &__email,
