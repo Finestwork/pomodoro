@@ -25,6 +25,10 @@
         <XMarkIcon />
       </button>
     </div>
+
+    <TransitionGroup name="list" tag="ul" class="text-input__error-list">
+      <li v-for="error in errors" :key="error">{{ error }}</li>
+    </TransitionGroup>
   </div>
 </template>
 
@@ -57,6 +61,11 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  data() {
+    return {
+      errors: []
+    };
   },
   emits: ['update:modelValue'],
   methods: {
@@ -96,6 +105,7 @@ export default {
 @use 'sass:map';
 @use '../../../assets/scss/1-settings/css-properties/colors/main';
 @use '../../../assets/scss/1-settings/css-properties/colors/text';
+@use '../../../assets/scss/1-settings/css-properties/colors/safety';
 @use '../../../assets/scss/1-settings/css-properties/box-shadow/transition' as box-shadow-transition;
 @use '../../../assets/scss/1-settings/css-properties/font-size/major-second';
 @use '../../../assets/scss/2-tools/functions/convertions/pixels';
@@ -129,11 +139,13 @@ $default-padding: 10;
 
   &__wrapper {
     position: relative;
+
     &.add-leading-icon {
       @include text-input-fields.list {
         padding-left: pixels.toRem($icon-size + $icon-offset + 5);
       }
     }
+
     &.add-trailing-icon {
       @include text-input-fields.list {
         padding-right: pixels.toRem($icon-size + $icon-offset + 5);
@@ -163,17 +175,21 @@ $default-padding: 10;
     transition: box-shadow-transition.$transition-linear;
     background-color: map.get(text.$main, 500);
     padding: pixels.toRem(3);
+
     &:focus,
     &:hover {
       background-color: map.get(main.$primary, 500);
     }
+
     &:focus {
       @include box-shadow-primary.lightness(lighter, md);
     }
+
     :deep(svg) {
       display: block;
       width: 100%;
       height: 100%;
+
       path {
         fill: white;
       }
@@ -188,6 +204,7 @@ $default-padding: 10;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+
     :deep(svg) {
       display: block;
       width: 100%;
@@ -202,6 +219,45 @@ $default-padding: 10;
 
   &__trailing-icon {
     right: #{$icon-offset}px;
+  }
+
+  &__error-list {
+    list-style: none;
+    font-weight: 500;
+    margin-top: pixels.toRem(8);
+    font-size: pixels.toRem(map.get(major-second.$scale, 2));
+    color: map.get(safety.$danger, 500);
+
+    > * {
+      margin-bottom: pixels.toRem(5);
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .list-move,
+  .list-enter-active,
+  .list-leave-active {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .list-enter-from,
+  .list-leave-to {
+    opacity: 0;
+  }
+
+  .list-enter-from {
+    transform: translateY(3px);
+  }
+
+  .list-leave-to {
+    transform: translateY(-3px);
+  }
+
+  .list-leave-active {
+    position: absolute;
   }
 }
 </style>
