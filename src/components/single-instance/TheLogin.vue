@@ -6,12 +6,12 @@
       <p class="form__label">Please login to continue</p>
       <form class="form__form">
         <BaseTextInput
-          class="form__username"
-          :label="'Username:'"
+          class="form__email"
+          :label="'Email:'"
           :type="'text'"
-          :id="'usernameTxt'"
-          :placeholder="'Enter username here'"
-          v-model="usernameText"
+          :id="'emailTxt'"
+          :placeholder="'Enter email here'"
+          v-model="emailText"
         >
           <template #leadingIcon>
             <UserIcon />
@@ -63,7 +63,7 @@ export default {
   },
   data() {
     return {
-      usernameText: '',
+      emailText: '',
       passwordText: '',
       toggleBtnLoading: false
     };
@@ -104,7 +104,7 @@ export default {
         xsm: 25
       ));
     }
-    &__username{
+    &__email{
       @include margin.bottom((
           xsm: 25
       ));
