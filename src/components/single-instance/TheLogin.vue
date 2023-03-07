@@ -8,7 +8,7 @@
         <BaseTextInput
           class="form__email"
           :label="'Email:'"
-          :type="'text'"
+          :type="'email'"
           :id="'emailTxt'"
           :placeholder="'Enter email here'"
           v-model="emailText"

@@ -195,7 +195,7 @@ export default {
         lg: block
     ));
     @include width-and-height.set((
-      xsm: (width: 50%)
+        xsm: (width: 50%)
     ));
   }
 
