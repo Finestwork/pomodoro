@@ -9,7 +9,7 @@
       v-if="errors.length !== 0"
     />
 
-    <form class="signup__form">
+    <form class="signup__form" @submit.prevent="submitForm">
       <BaseTextInput
         class="form__username"
         :label="'Username:'"
@@ -56,9 +56,8 @@
       <BasePlayfulButton
         ref="submitBtn"
         class="form__submit"
-        :type="'button'"
+        :type="'submit'"
         :is-loading="toggleBtnLoading"
-        @click="submitForm"
       >
         <template #text>Register</template>
       </BasePlayfulButton>
