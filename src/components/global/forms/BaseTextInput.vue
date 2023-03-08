@@ -128,6 +128,8 @@ export default {
         ['blur', 'keyup', 'keydown'].forEach((ev) => {
           this.sameWithElement.addEventListener(ev, this.sameWith);
         });
+
+        this.validationFns.push(this.sameWith);
       }
     },
 
@@ -200,6 +202,7 @@ export default {
         this.modelValue !== this.sameWithElement.value
           ? LanguageHelper.getErrors.sameWith(FIELD_NAME)
           : null;
+      console.log(ERROR_MSG);
       this.addOrRemoveError('sameWith', ERROR_MSG);
     }
   },
