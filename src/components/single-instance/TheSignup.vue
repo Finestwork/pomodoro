@@ -96,9 +96,11 @@ export default {
       errors: []
     };
   },
+  emits: ['successfullyRegistered', 'updateProfileFailed'],
   methods: {
     submitForm() {
       this.$refs.submitBtn.$el.blur(); // Bouncy effect
+      this.errors = [];
       this.toggleBtnLoading = true;
 
       // Validate Fields
@@ -129,6 +131,8 @@ export default {
         this.errors.push('• Confirm password must be greater than 5');
       }
 
+      console.log(this.errors.length);
+
       // If there's an error, do not register the user
       if (this.errors.length !== 0) {
         this.toggleBtnLoading = false;
@@ -142,14 +146,18 @@ export default {
 
           console.log(res);
 
-          updateProfile(getAuth().currentUser, { displayName: this.usernameText }).then((res) => {
-            console.log(res);
-            // Success
-          });
+          updateProfile(getAuth().currentUser, { displayName: this.usernameText })
+            .then(() => {
+              this.$emit('successfullyRegistered');
+            })
+            .catch(() => {
+              this.$emit('updateProfileFailed');
+            });
         })
         .catch((err) => {
           this.toggleBtnLoading = false;
           console.log(err);
+          this.$emit('failedRegister');
         });
     }
   }
@@ -168,75 +176,78 @@ export default {
 @use '../../assets/scss/2-tools/mixins/css-properties/box-shadow/primary' as box-shadow-primary;
 
 // prettier-ignore
-.signup{
+.signup {
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  &__title{
+  &__title {
     font-weight: 800;
     color: map.get(main.$primary, 900);
     @include font-size.responsive((
-      xsm: map.get(major-second.$scale, 7)
+        xsm: map.get(major-second.$scale, 7)
     ));
   }
 
-  &__alert-list{
+  &__alert-list {
     @include margin.top((
-      xsm: 20
+        xsm: 20
     ));
     @include margin.bottom((
-      xsm: 20
+        xsm: 20
     ));
   }
 
-  &__form{
+  &__form {
     max-width: 650px;
-    .form{
+
+    .form {
       &__username,
       &__email,
-      &__password{
+      &__password {
         @include margin.bottom((
             xsm: 15
         ));
       }
-      &__submit{
+
+      &__submit {
         width: 100%;
         max-width: 250px;
         margin-left: auto;
         margin-right: auto;
         @include margin.top((
-          xsm: 35
+            xsm: 35
         ));
         @include padding.vertical((
-          xsm: 15
+            xsm: 15
         ));
       }
     }
   }
 
-  &__login-msg{
+  &__login-msg {
     font-weight: 500;
     color: map.get(text.$main, 800);
     @include font-size.responsive((
-      xsm: map.get(major-second.$scale, 3)
+        xsm: map.get(major-second.$scale, 3)
     ));
     @include margin.top((
-      xsm: 30
+        xsm: 30
     ));
   }
-  &__login-link{
+
+  &__login-link {
     transition: box-shadow-transition.$transition-linear;
     color: map.get(main.$primary, 500);
 
-    &:focus{
+    &:focus {
       outline: none;
       @include box-shadow-primary.lightness(light, sm);
     }
 
     &:focus,
-    &:hover{
+    &:hover {
       color: darken(map.get(main.$primary, 500), 5%);
     }
   }

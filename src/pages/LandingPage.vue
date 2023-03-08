@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="home">
+    <div class="home" v-if="shouldShowForm">
       <div class="home__left">
         <img
           class="home__bg"
@@ -23,13 +23,13 @@
           @before-leave="onBeforeLeave"
           @leave="onLeave"
         >
-          <Component :is="getRoute" />
+          <Component :is="getRoute" @successfullyRegistered="successfullyRegistered" />
         </Transition>
       </div>
     </div>
 
     <!-- If logged in -->
-    <TheHomepage v-if="false" />
+    <TheHomepage v-if="shouldShowHomePage" />
   </main>
 </template>
 
@@ -52,7 +52,9 @@ export default {
       beforeEnterLeft: 0,
       beforeEnterTop: 0,
       beforeEnterWidth: 0,
-      beforeEnterHeight: 0
+      beforeEnterHeight: 0,
+      shouldShowForm: true,
+      shouldShowHomePage: false
     };
   },
   methods: {
@@ -89,8 +91,6 @@ export default {
       const { height, width, top } = el.getBoundingClientRect();
       const left = el.offsetLeft;
 
-      console.log(height);
-
       Object.assign(el.style, {
         position: 'absolute',
         top: `${top}px`,
@@ -110,6 +110,11 @@ export default {
           el.style = null;
         }
       });
+    },
+
+    successfullyRegistered() {
+      this.shouldShowForm = false;
+      this.shouldShowHomePage = true;
     }
   },
   computed: {

@@ -200,7 +200,7 @@ export default {
         this.modelValue !== this.sameWithElement.value
           ? LanguageHelper.getErrors.sameWith(FIELD_NAME)
           : null;
-      this.addOrRemoveError('email', ERROR_MSG);
+      this.addOrRemoveError('sameWith', ERROR_MSG);
     }
   },
   computed: {
