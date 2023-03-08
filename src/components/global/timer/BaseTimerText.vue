@@ -68,18 +68,20 @@ export default {
 @use '../../../assets/scss/2-tools/mixins/css-properties/font-size';
 
 // prettier-ignore
-.timer--text{
-  .timer{
-    &__text{
+.timer--text {
+  .timer {
+    &__text {
       font-feature-settings: "kern";
       font-variation-settings: "wght" 900, "wdth" 110, "opsz" 14;
       @include font-size.responsive((
-        xsm: 300
+          xsm: 80,
+          450: 150,
+          lg: 300
       ));
     }
   }
 
-  &.initial{
+  &.initial {
     color: darken(map.get(main.$primary, 900), 3%);
   }
 }

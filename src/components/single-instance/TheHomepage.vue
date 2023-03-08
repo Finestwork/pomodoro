@@ -4,9 +4,13 @@
       <TheNavbar class="nav" />
 
       <div class="homepage__timer-wrapper">
-        <ThePomoLabel />
+        <ThePomoLabel class="homepage__pomo-label" />
         <BaseTimerText :color-state="currentColorState" :is-playing="isPlaying" />
-        <ThePomodoroControls :current-color-state="currentColorState" @onTogglePlay="togglePlay" />
+        <ThePomodoroControls
+          class="homepage__pomo-controls"
+          :current-color-state="currentColorState"
+          @onTogglePlay="togglePlay"
+        />
       </div>
     </div>
   </div>
@@ -71,8 +75,26 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    @include margin.top((
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    @include padding.bottom((
       xsm: 50
+    ));
+  }
+
+  &__pomo-label{
+    @include margin.top((
+      lg: 100
+    ));
+    @include margin.bottom((
+        xsm: 25
+    ));
+  }
+
+  &__pomo-controls{
+    @include margin.top((
+        xsm: 15
     ));
   }
 }

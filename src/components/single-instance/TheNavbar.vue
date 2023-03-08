@@ -17,10 +17,6 @@
       <BaseButtonIcon tooltip="Logout">
         <ArrowLeftFromLineIcon />
       </BaseButtonIcon>
-
-      <span class="nav__dashed-border">
-        <DashedBorder />
-      </span>
     </div>
   </nav>
 </template>
@@ -52,31 +48,33 @@ export default {
 @use 'sass:map';
 @use '../../assets/scss/1-settings/css-properties/colors/main';
 @use '../../assets/scss/2-tools/mixins/css-properties/padding';
+@use '../../assets/scss/2-tools/mixins/css-properties/margin';
+@use '../../assets/scss/2-tools/mixins/css-properties/all-properties';
 
 // prettier-ignore
 .nav {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  //border-bottom: 1px dashed map.get(main.$primary, 600);
+  @include all-properties.init((
+      xsm: (
+          display: flex,
+          flex-direction: column,
+          border-bottom: 2px dashed map.get(main.$primary, 600)
+      ),
+      380: (
+          flex-direction: row,
+          justify-content: space-between,
+          align-items: center
+      )
+  ));
   @include padding.bottom((
-    xsm: 25
+      xsm: 25
   ));
 
   &__items {
     display: flex;
-  }
-
-  &__dashed-border{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    :deep(svg){
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+    @include margin.top((
+        xsm: 15,
+        380: 0
+    ));
   }
 }
 </style>

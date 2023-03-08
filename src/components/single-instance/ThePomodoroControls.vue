@@ -73,6 +73,7 @@ export default {
     &:hover {
       background-color: map.get($map, hoverPlay);
     }
+
     :deep(svg) path {
       fill: map.get($map, playIcon);
     }
@@ -86,6 +87,7 @@ export default {
     &:hover {
       background-color: map.get($map, hoverNext);
     }
+
     :deep(svg) path {
       fill: map.get($map, nextIcon);
     }
@@ -105,7 +107,7 @@ export default {
     border: none;
     transition: background-color .15s ease;
     @include padding.all-sides((
-      xsm: 15
+        xsm: 15
     ));
 
     :deep(svg) {
@@ -115,20 +117,22 @@ export default {
     }
   }
 
-  .control__play{
+  .control__play {
     border-radius: 10px;
     @include margin.right((
-        xsm: 30
+        xsm: 15
     ));
     @include width-and-height.set((
-        xsm: (width: 120px, height: 90px)
+        xsm: (width: 80px, height: 50px),
+        lg: (width: 120px, height: 90px),
     ));
   }
 
-  .control__next{
+  .control__next {
     border-radius: 10px;
     @include width-and-height.set((
-        xsm: (width: 90px, height: 70px)
+        xsm: (width: 80px, height: 50px),
+        lg: (width: 90px, height: 70px)
     ));
   }
 

@@ -22,6 +22,7 @@ export default {
 @use '../../assets/scss/2-tools/mixins/css-properties/font-size';
 @use '../../assets/scss/2-tools/mixins/css-properties/padding';
 @use '../../assets/scss/2-tools/mixins/css-properties/margin';
+@use '../../assets/scss/2-tools/mixins/css-properties/width-and-height';
 
 // prettier-ignore
 .pomo-label {
@@ -36,10 +37,11 @@ export default {
   .label {
     &__icon {
       display: flex;
-      width: 20px;
-      height: 20px;
       @include margin.right((
         xsm: 7
+      ));
+      @include width-and-height.set((
+        xsm: (width: 13px, height: 13px)
       ));
       :deep(svg) {
         display: block;
@@ -50,7 +52,7 @@ export default {
     &__text{
       font-weight: 600;
       @include font-size.responsive((
-        xsm: map.get(major-second.$scale, 6)
+        xsm: map.get(major-second.$scale, 4)
       ));
     }
   }
