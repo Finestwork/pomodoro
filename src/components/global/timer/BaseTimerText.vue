@@ -1,16 +1,57 @@
 <template>
   <div :class="getRootClass">
-    <span class="timer__text">24:35</span>
+    <span class="timer__text" ref="timerText">24:35</span>
   </div>
 </template>
 
 <script>
+import anime from 'animejs';
+
 export default {
   props: {
+    isPlaying: {
+      type: Boolean,
+      required: true
+    },
     // initial, focus, short-break, long-break
     colorState: {
       type: String,
       required: true
+    }
+  },
+  watch: {
+    isPlaying(isPlaying) {
+      if (isPlaying) {
+        const FONT_SETTINGS = {
+          wght: 400
+        };
+
+        anime({
+          targets: FONT_SETTINGS,
+          wght: 900,
+          round: 1,
+          update: () => {
+            Object.assign(this.$refs.timerText.style, {
+              'font-variation-settings': `"wght" ${FONT_SETTINGS.wght}`
+            });
+          }
+        });
+      } else {
+        const FONT_SETTINGS = {
+          wght: 900
+        };
+
+        anime({
+          targets: FONT_SETTINGS,
+          wght: 400,
+          round: 1,
+          update: () => {
+            Object.assign(this.$refs.timerText.style, {
+              'font-variation-settings': `"wght" ${FONT_SETTINGS.wght}`
+            });
+          }
+        });
+      }
     }
   },
   computed: {

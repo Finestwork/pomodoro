@@ -5,8 +5,8 @@
 
       <div class="homepage__timer-wrapper">
         <ThePomoLabel />
-        <BaseTimerText :color-state="currentColorState" />
-        <ThePomodoroControls :current-color-state="currentColorState" />
+        <BaseTimerText :color-state="currentColorState" :is-playing="isPlaying" />
+        <ThePomodoroControls :current-color-state="currentColorState" @onTogglePlay="togglePlay" />
       </div>
     </div>
   </div>
@@ -25,10 +25,14 @@ export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
   data() {
     return {
-      currentColorState: 'initial'
+      currentColorState: 'initial',
+      isPlaying: false
     };
   },
   methods: {
+    togglePlay() {
+      this.isPlaying = !this.isPlaying;
+    },
     logoutUser() {
       getAuth().signOut();
     }

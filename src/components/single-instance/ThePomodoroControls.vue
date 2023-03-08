@@ -42,9 +42,11 @@ export default {
       isPlaying: false
     };
   },
+  emits: ['onTogglePlay'],
   methods: {
     togglePlay() {
       this.isPlaying = !this.isPlaying;
+      this.$emit('onTogglePlay', this.isPlaying);
     }
   },
   computed: {
