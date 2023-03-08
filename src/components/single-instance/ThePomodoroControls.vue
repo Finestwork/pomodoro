@@ -109,6 +109,10 @@ export default {
     @include padding.all-sides((
         xsm: 15
     ));
+    @include width-and-height.set((
+        xsm: (width: 80px, height: 50px),
+        lg: (width: 90px, height: 70px)
+    ));
 
     :deep(svg) {
       display: block;
@@ -122,18 +126,10 @@ export default {
     @include margin.right((
         xsm: 15
     ));
-    @include width-and-height.set((
-        xsm: (width: 80px, height: 50px),
-        lg: (width: 120px, height: 90px),
-    ));
   }
 
   .control__next {
     border-radius: 10px;
-    @include width-and-height.set((
-        xsm: (width: 80px, height: 50px),
-        lg: (width: 90px, height: 70px)
-    ));
   }
 
   /* States */
