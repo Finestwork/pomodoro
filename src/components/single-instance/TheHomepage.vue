@@ -2,18 +2,32 @@
   <div class="homepage">
     <div class="homepage__container">
       <TheNavbar class="nav" />
+
+      <div class="homepage__timer-wrapper">
+        <ThePomoLabel />
+        <BaseTimerText :color-state="currentColorState" />
+        <ThePomodoroControls :current-color-state="currentColorState" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import TheNavbar from '@/components/single-instance/TheNavbar.vue';
+import ThePomoLabel from '@/components/single-instance/ThePomoLabel.vue';
+import BaseTimerText from '@/components/global/timer/BaseTimerText.vue';
+import ThePomodoroControls from '@/components/single-instance/ThePomodoroControls.vue';
 
 // NPM
 import { getAuth } from 'firebase/auth';
 
 export default {
-  components: { TheNavbar },
+  components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
+  data() {
+    return {
+      currentColorState: 'initial'
+    };
+  },
   methods: {
     logoutUser() {
       getAuth().signOut();
@@ -47,6 +61,15 @@ export default {
           xsm: 30
       ));
     }
+  }
+
+  &__timer-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    @include margin.top((
+      xsm: 50
+    ));
   }
 }
 </style>
