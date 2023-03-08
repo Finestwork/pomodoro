@@ -202,7 +202,6 @@ export default {
         this.modelValue !== this.sameWithElement.value
           ? LanguageHelper.getErrors.sameWith(FIELD_NAME)
           : null;
-      console.log(ERROR_MSG);
       this.addOrRemoveError('sameWith', ERROR_MSG);
     }
   },

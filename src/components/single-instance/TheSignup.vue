@@ -79,6 +79,7 @@ import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase
 import isEmpty from 'validator/es/lib/isEmpty';
 import isEmail from 'validator/es/lib/isEmail';
 import isLength from 'validator/es/lib/isLength';
+import GoogleCodeErrors from '@/assets/js/auth/google-code-errors';
 
 export default {
   components: {
@@ -131,8 +132,6 @@ export default {
         this.errors.push('• Confirm password must be greater than 5');
       }
 
-      console.log(this.errors.length);
-
       // If there's an error, do not register the user
       if (this.errors.length !== 0) {
         this.toggleBtnLoading = false;
@@ -141,10 +140,8 @@ export default {
 
       // validate
       createUserWithEmailAndPassword(getAuth(), this.emailText, this.passwordText)
-        .then((res) => {
+        .then(() => {
           this.toggleBtnLoading = false;
-
-          console.log(res);
 
           updateProfile(getAuth().currentUser, { displayName: this.usernameText })
             .then(() => {
@@ -156,7 +153,12 @@ export default {
         })
         .catch((err) => {
           this.toggleBtnLoading = false;
-          console.log(err);
+          if (err.code) {
+            this.errors.push(`• ${GoogleCodeErrors.getErrors[err.code]}`);
+            return;
+          }
+
+          this.errors.push('• Sorry unable to register, please try again later.');
           this.$emit('failedRegister');
         });
     }
