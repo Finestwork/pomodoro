@@ -37,7 +37,10 @@
 import TheLogin from '@/components/single-instance/TheLogin.vue';
 import TheSignup from '@/components/single-instance/TheSignup.vue';
 import TheHomepage from '@/components/single-instance/TheHomepage.vue';
+
+// NPM
 import anime from 'animejs';
+import { getAuth } from 'firebase/auth';
 
 const routes = {
   '/login': TheLogin,
@@ -53,9 +56,13 @@ export default {
       beforeEnterTop: 0,
       beforeEnterWidth: 0,
       beforeEnterHeight: 0,
-      shouldShowForm: true,
-      shouldShowHomePage: false
+      shouldShowForm: false,
+      shouldShowHomePage: false,
+      unsubscribeAuth: null
     };
+  },
+  mounted() {
+    this.checkCurrentlyLoggedInUser();
   },
   methods: {
     onBeforeLeave(el) {
@@ -112,10 +119,29 @@ export default {
       });
     },
 
+    checkCurrentlyLoggedInUser() {
+      this.unsubscribeAuth = getAuth().onAuthStateChanged((user) => {
+        console.log(user);
+        if (user === null) {
+          this.shouldShowForm = true;
+          this.shouldShowHomePage = false;
+          if (this.$route.path === '/') this.$router.push({ name: 'Login' });
+          return;
+        }
+
+        this.shouldShowForm = false;
+        this.shouldShowHomePage = true;
+        this.$router.push({ name: 'LandingPage' });
+      });
+    },
+
     successfullyRegistered() {
       this.shouldShowForm = false;
       this.shouldShowHomePage = true;
     }
+  },
+  unmounted() {
+    this.unsubscribeAuth();
   },
   computed: {
     getRoute() {
