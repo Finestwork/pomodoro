@@ -50,7 +50,7 @@ import TheLogo from '@/components/single-instance/TheLogo.vue';
 import BaseTextInput from '@/components/global/forms/BaseTextInput.vue';
 import UserIcon from '@/components/icons/User.vue';
 import LockIcon from '@/components/icons/Lock.vue';
-import BasePlayfulButton from '@/components/global/buttons/BasePlayfulButton.vue';
+import BasePlayfulButton from '@/components/global/buttons/BaseButtonPlayful.vue';
 import BaseListAlert from '@/components/global/alerts/BaseListAlert.vue';
 import isEmpty from 'validator/es/lib/isEmpty';
 import isEmail from 'validator/es/lib/isEmail';

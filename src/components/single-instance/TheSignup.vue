@@ -72,7 +72,7 @@
 
 <script>
 import BaseTextInput from '@/components/global/forms/BaseTextInput.vue';
-import BasePlayfulButton from '@/components/global/buttons/BasePlayfulButton.vue';
+import BasePlayfulButton from '@/components/global/buttons/BaseButtonPlayful.vue';
 import BaseListAlert from '@/components/global/alerts/BaseListAlert.vue';
 
 // NPM

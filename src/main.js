@@ -2,6 +2,8 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { initializeApp } from 'firebase/app';
+import FloatingVue from 'floating-vue';
+import 'floating-vue/dist/style.css';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCuoGNaLWyct6-U9sNy9pSKJ_2lBaEFQuw',
@@ -16,4 +18,4 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-createApp(App).use(router).mount('body');
+createApp(App).use(router).use(FloatingVue).mount('body');

@@ -3,7 +3,11 @@
 </template>
 
 <style lang="scss">
+@use 'sass:map';
 @use 'assets/scss/1-settings/css-properties/font-family/roboto-flex';
+@use 'assets/scss/1-settings/css-properties/font-size/major-second';
+@use 'assets/scss/1-settings/css-properties/colors/main';
+@use 'assets/scss/2-tools/functions/convertions/pixels';
 @use 'assets/scss/3-generics/normalize';
 @use 'assets/scss/3-generics/reset-space';
 @use 'assets/scss/3-generics/reset-form-fields';
@@ -27,6 +31,33 @@ main {
   flex-direction: column;
   h2 {
     margin-bottom: 1rem;
+  }
+}
+
+.btn-tooltip.v-popper--theme-tooltip {
+  font-weight: 600;
+  font-size: pixels.toRem(map.get(major-second.$scale, 2));
+
+  .v-popper__inner {
+    background: map.get(main.$primary, 500);
+  }
+
+  .v-popper__arrow-outer,
+  .v-popper__arrow-inner {
+    border-color: map.get(main.$primary, 500);
+  }
+
+  &.v-popper__popper--show-from {
+    .v-popper__wrapper {
+      transform: translateY(4px);
+    }
+  }
+
+  &.v-popper__popper--show-to {
+    .v-popper__wrapper {
+      transform: none;
+      transition: transform 0.15s ease;
+    }
   }
 }
 </style>
