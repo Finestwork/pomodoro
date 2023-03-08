@@ -32,12 +32,7 @@
             <LockIcon />
           </template>
         </BaseTextInput>
-        <BasePlayfulButton
-          class="form__submit"
-          :type="'button'"
-          :is-loading="toggleBtnLoading"
-          @click="submitForm"
-        >
+        <BasePlayfulButton class="form__submit" :type="'submit'" :is-loading="toggleBtnLoading">
           <template #text>Login</template>
         </BasePlayfulButton>
       </form>
@@ -116,7 +111,6 @@ export default {
         return;
       }
 
-      //
       signInWithEmailAndPassword(getAuth(), this.emailText, this.passwordText)
         .then(() => {
           this.toggleBtnLoading = false;
