@@ -1,7 +1,7 @@
 <template>
   <div class="homepage">
     <div class="homepage__container">
-      <TheNavbar class="nav" />
+      <TheNavbar />
 
       <div class="homepage__timer-wrapper">
         <ThePomoLabel class="homepage__pomo-label" />
@@ -22,9 +22,6 @@ import ThePomoLabel from '@/components/single-instance/ThePomoLabel.vue';
 import BaseTimerText from '@/components/global/timer/BaseTimerText.vue';
 import ThePomodoroControls from '@/components/single-instance/ThePomodoroControls.vue';
 
-// NPM
-import { getAuth } from 'firebase/auth';
-
 export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
   data() {
@@ -36,9 +33,6 @@ export default {
   methods: {
     togglePlay() {
       this.isPlaying = !this.isPlaying;
-    },
-    logoutUser() {
-      getAuth().signOut();
     }
   }
 };

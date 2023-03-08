@@ -2,7 +2,7 @@
   <nav class="nav">
     <TheLogo />
     <div class="nav__items">
-      <BaseButtonIcon tooltip="Room Settings">
+      <BaseButtonIcon tooltip="Room Settings" @click="showRoomSettings">
         <GearIcon />
       </BaseButtonIcon>
       <BaseButtonIcon tooltip="Share Link">
@@ -14,11 +14,15 @@
       <BaseButtonIcon tooltip="User">
         <UserIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="Logout">
+      <BaseButtonIcon tooltip="Logout" @click="logoutUser">
         <ArrowLeftFromLineIcon />
       </BaseButtonIcon>
     </div>
   </nav>
+
+  <Teleport to="body">
+    <TheRoomSettingsModal :show-modal="shouldShowModal" @onModalClose="onModalClose" />
+  </Teleport>
 </template>
 <script>
 import BaseButtonIcon from '@/components/global/buttons/BaseButtonIcon.vue';
@@ -28,7 +32,10 @@ import ChartColumnIcon from '@/components/icons/ChartColumn.vue';
 import LinkIcon from '@/components/icons/Link.vue';
 import GearIcon from '@/components/icons/Gear.vue';
 import TheLogo from '@/components/single-instance/TheLogo.vue';
-import DashedBorder from '@/components/Shapes/DashedBorder.vue';
+import TheRoomSettingsModal from '@/components/single-instance/TheRoomSettingsModal.vue';
+
+// NPM
+import { getAuth } from 'firebase/auth';
 
 export default {
   components: {
@@ -39,7 +46,24 @@ export default {
     ChartColumnIcon,
     LinkIcon,
     GearIcon,
-    DashedBorder
+    TheRoomSettingsModal
+  },
+  data() {
+    return {
+      shouldShowModal: false
+    };
+  },
+  methods: {
+    logoutUser() {
+      getAuth().signOut();
+    },
+    onModalClose() {
+      this.shouldShowModal = false;
+    },
+    showRoomSettings(e) {
+      e.currentTarget.blur();
+      this.shouldShowModal = true;
+    }
   }
 };
 </script>
@@ -65,7 +89,7 @@ export default {
           align-items: center
       )
   ));
-  @include padding.bottom((
+  @include padding.vertical((
       xsm: 25
   ));
 
