@@ -27,7 +27,12 @@ module.exports = ({ mode }) => {
     ]
   });
 
+  const PLUGINS =
+    mode === 'production'
+      ? [CSSNANO_CONFIG, PURGE_CSS_CONFIG, require('autoprefixer')]
+      : [CSSNANO_CONFIG, require('autoprefixer')];
+
   return {
-    plugins: [CSSNANO_CONFIG, PURGE_CSS_CONFIG, require('autoprefixer')]
+    plugins: PLUGINS
   };
 };

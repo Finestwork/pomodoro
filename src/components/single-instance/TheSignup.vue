@@ -2,6 +2,13 @@
   <div class="signup">
     <h2 class="signup__title">Signup</h2>
 
+    <BaseListAlert
+      class="signup__alert-list"
+      :lists="errors"
+      :color-scheme="'danger'"
+      v-if="errors.length !== 0"
+    />
+
     <form class="signup__form">
       <BaseTextInput
         class="form__username"
@@ -9,6 +16,7 @@
         :type="'text'"
         :id="'signupUsernameTxt'"
         :placeholder="'Enter username here'"
+        :validation-rules="{ required: true }"
         v-model="usernameText"
       />
       <BaseTextInput
@@ -17,6 +25,7 @@
         :type="'email'"
         :id="'signupEmailTxt'"
         :placeholder="'Enter email here'"
+        :validation-rules="{ isEmail: true }"
         v-model="emailText"
       />
       <BaseTextInput
@@ -25,6 +34,9 @@
         :type="'password'"
         :id="'signupPasswordTxt'"
         :placeholder="'Enter password here'"
+        :validation-rules="{
+          min: 6
+        }"
         v-model="passwordText"
       />
       <BaseTextInput
@@ -33,9 +45,14 @@
         :type="'password'"
         :id="'signupConfirmPasswordTxt'"
         :placeholder="'Confirm your password here'"
+        :validation-rules="{
+          min: 6,
+          sameWith: { element: '#signupPasswordTxt', fieldName: 'password' }
+        }"
         v-model="confirmPasswordText"
       />
       <BasePlayfulButton
+        ref="submitBtn"
         class="form__submit"
         :type="'button'"
         :is-loading="toggleBtnLoading"
@@ -55,12 +72,19 @@
 <script>
 import BaseTextInput from '@/components/global/forms/BaseTextInput.vue';
 import BasePlayfulButton from '@/components/global/buttons/BasePlayfulButton.vue';
+import BaseListAlert from '@/components/global/alerts/BaseListAlert.vue';
+
+// NPM
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import isEmpty from 'validator/es/lib/isEmpty';
+import isEmail from 'validator/es/lib/isEmail';
+import isLength from 'validator/es/lib/isLength';
 
 export default {
   components: {
     BaseTextInput,
-    BasePlayfulButton
+    BasePlayfulButton,
+    BaseListAlert
   },
   data() {
     return {
@@ -68,13 +92,50 @@ export default {
       emailText: '',
       passwordText: '',
       confirmPasswordText: '',
-      toggleBtnLoading: false
+      toggleBtnLoading: false,
+      errors: []
     };
   },
   methods: {
     submitForm() {
+      this.$refs.submitBtn.$el.blur(); // Bouncy effect
       this.toggleBtnLoading = true;
 
+      // Validate Fields
+      [
+        { field: 'usernameText', message: `• Username field must not be empty` },
+        { field: 'emailText', message: `• Email field must not be empty` },
+        { field: 'passwordText', message: `• Password field must not be empty` },
+        { field: 'confirmPasswordText', message: `• Confirm password field must not be empty` }
+      ].forEach((fieldObj) => {
+        if (isEmpty(this[fieldObj.field])) {
+          this.errors.push(fieldObj.message);
+        }
+      });
+
+      if (!isEmail(this.emailText)) {
+        this.errors.push('• Invalid email address.');
+      }
+
+      if (this.passwordText !== this.confirmPasswordText) {
+        this.errors.push('• Password fields is the same.');
+      }
+
+      if (!isLength(this.passwordText, { min: 6 })) {
+        this.errors.push('• Password must be greater than 5.');
+      }
+
+      if (!isLength(this.confirmPasswordText, { min: 6 })) {
+        this.errors.push('• Confirm password must be greater than 5');
+      }
+
+      // If there's an error, do not register the user
+      if (this.errors.length !== 0) {
+        this.toggleBtnLoading = false;
+        return;
+      }
+
+      // validate
       createUserWithEmailAndPassword(getAuth(), this.emailText, this.passwordText)
         .then((res) => {
           this.toggleBtnLoading = false;
@@ -121,6 +182,15 @@ export default {
     ));
   }
 
+  &__alert-list{
+    @include margin.top((
+      xsm: 20
+    ));
+    @include margin.bottom((
+      xsm: 20
+    ));
+  }
+
   &__form{
     max-width: 650px;
     .form{
@@ -151,6 +221,9 @@ export default {
     color: map.get(text.$main, 800);
     @include font-size.responsive((
       xsm: map.get(major-second.$scale, 3)
+    ));
+    @include margin.top((
+      xsm: 30
     ));
   }
   &__login-link{

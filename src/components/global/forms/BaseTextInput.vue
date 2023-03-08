@@ -7,8 +7,11 @@
         :placeholder="placeholder"
         :type="type"
         :id="id"
-        @input="onInput"
         :value="modelValue"
+        @input="onInput"
+        @keyup="onKeyup"
+        @keydown="onKeydown"
+        @blur="onBlur"
       />
       <span class="text-input__leading-icon" v-if="canShowLeadingIcon">
         <slot name="leadingIcon"></slot>
@@ -27,13 +30,19 @@
     </div>
 
     <TransitionGroup name="list" tag="ul" class="text-input__error-list">
-      <li v-for="error in errors" :key="error">{{ error }}</li>
+      <li v-for="error in errors" :key="error">{{ Object.values(error)[0] }}</li>
     </TransitionGroup>
   </div>
 </template>
 
 <script>
 import XMarkIcon from '@/components/icons/XMark.vue';
+import LanguageHelper from '@/assets/js/lang/en';
+import ArrayHelper from '@/assets/js/helpers/array-helper';
+
+// NPM
+import isEmpty from 'validator/es/lib/isEmpty';
+import isEmail from 'validator/es/lib/isEmail';
 
 export default {
   components: { XMarkIcon },
@@ -60,21 +69,138 @@ export default {
     clearable: {
       type: Boolean,
       default: false
+    },
+
+    // Programmatically run the validation functions
+    runValidation: {
+      type: Boolean,
+      default: false
+    },
+
+    /**
+     * @validations: {
+     *   required: Boolean,
+     *   min: Number,
+     *   max: Number,
+     *   isEmail: Boolean,
+     *   sameWith: {element: String <css valid selector>, fieldName: String}
+     * }
+     */
+    validationRules: {
+      type: Object,
+      default: null
     }
   },
   data() {
     return {
-      errors: []
+      errors: [],
+      validationFns: [],
+      sameWithElement: null
     };
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'onKeyup', 'onKeydown', 'onBlur'],
+  mounted() {
+    this.getPossibleValidation();
+  },
   methods: {
+    getPossibleValidation() {
+      if (this.validationRules === null) return;
+
+      if (this.validationRules.hasOwnProperty('required') && this.validationRules.required) {
+        this.validationFns.push(this.isRequired);
+      }
+      if (this.validationRules.hasOwnProperty('max')) {
+        this.validationFns.push(this.max);
+      }
+      if (this.validationRules.hasOwnProperty('min')) {
+        this.validationFns.push(this.min);
+      }
+      if (this.validationRules.hasOwnProperty('isEmail') && this.validationRules.isEmail) {
+        this.validationFns.push(this.email);
+      }
+
+      if (
+        this.validationRules.hasOwnProperty('sameWith') &&
+        Object.keys(this.validationRules.sameWith).length !== 0
+      ) {
+        this.sameWithElement = document.querySelector(this.validationRules.sameWith.element);
+
+        ['blur', 'keyup', 'keydown'].forEach((ev) => {
+          this.sameWithElement.addEventListener(ev, this.sameWith);
+        });
+      }
+    },
+
+    /*
+     * =====================
+     * Events
+     * =====================
+     */
     onInput() {
       this.$emit('update:modelValue', this.$refs.input.value);
     },
     clearField() {
       this.$refs.input.value = '';
       this.$emit('update:modelValue', this.$refs.input.value);
+    },
+    onKeyup() {
+      this.validationFns.forEach((fn) => fn());
+      this.$emit('onKeyup', this.modelValue);
+    },
+    onKeydown() {
+      if (!isEmpty(this.modelValue)) this.validationFns.forEach((fn) => fn());
+      this.$emit('onKeydown', this.modelValue);
+    },
+    onBlur() {
+      this.validationFns.forEach((fn) => fn());
+      this.$emit('onBlur', this.modelValue);
+    },
+
+    /*
+     * =====================
+     * Validation Helpers
+     * =====================
+     */
+
+    addOrRemoveError(prop, msg) {
+      const IND = ArrayHelper.isPropExist(this.errors, prop);
+      if (IND === -1 && msg !== null) this.errors.push({ [prop]: msg });
+      if (IND !== -1 && msg === null) this.errors.splice(IND, 1);
+    },
+
+    isRequired() {
+      const ERROR_MSG = isEmpty(this.modelValue) ? LanguageHelper.getErrors.required : null;
+      this.addOrRemoveError('required', ERROR_MSG);
+    },
+
+    max() {
+      if (isEmpty(this.modelValue)) return;
+      const MAX = this.validationRules.max;
+      const ERROR_MSG = this.modelValue.length > MAX ? LanguageHelper.getErrors.max(MAX) : null;
+      this.addOrRemoveError('max', ERROR_MSG);
+    },
+
+    min() {
+      if (isEmpty(this.modelValue)) return;
+      const MIN = this.validationRules.min;
+      const ERROR_MSG = this.modelValue.length < MIN ? LanguageHelper.getErrors.min(MIN) : null;
+      this.addOrRemoveError('min', ERROR_MSG);
+    },
+
+    email() {
+      if (isEmpty(this.modelValue)) return;
+      const ERROR_MSG = !isEmail(this.modelValue) ? LanguageHelper.getErrors.email : null;
+      this.addOrRemoveError('email', ERROR_MSG);
+    },
+
+    sameWith() {
+      if (isEmpty(this.sameWithElement.value)) return;
+      const FIELD_NAME = this.validationRules.sameWith.fieldName;
+      const ERROR_MSG =
+        this.modelValue !== this.sameWithElement.value
+          ? LanguageHelper.getErrors.sameWith(FIELD_NAME)
+          : null;
+      this.addOrRemoveError('email', ERROR_MSG);
     }
   },
   computed: {
@@ -96,6 +222,16 @@ export default {
     },
     canShowClearBtn() {
       return this.modelValue !== '' && this.clearable;
+    }
+  },
+  watch: {
+    runValidation: {
+      handler(shouldRunValidation) {
+        if (shouldRunValidation) {
+          this.validationFns.forEach((fn) => fn());
+        }
+      },
+      immediate: true
     }
   }
 };

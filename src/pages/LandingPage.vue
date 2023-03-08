@@ -89,6 +89,8 @@ export default {
       const { height, width, top } = el.getBoundingClientRect();
       const left = el.offsetLeft;
 
+      console.log(height);
+
       Object.assign(el.style, {
         position: 'absolute',
         top: `${top}px`,
@@ -132,11 +134,12 @@ export default {
 // prettier-ignore
 .home {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   overflow: hidden;
 
   &__bg {
     width: 100%;
+    pointer-events: none;
   }
 
   &__slogan {
@@ -192,7 +195,9 @@ export default {
   }
 
   &__left {
-    position: relative;
+    position: fixed;
+    height: 100vh;
+    z-index: 999;
     background: linear-gradient(40deg, map.get(main.$primary, 500) 10%, map.get(main.$primary, 200));
     @include display.set((
         xsm: none,
@@ -205,9 +210,9 @@ export default {
 
   &__right {
     margin-left: auto;
-    margin-right: auto;
-    overflow: hidden;
+    min-height: 100vh;
     position: relative;
+    background-color: white;
     @include width-and-height.set((
         xsm: (width: 100%, maxWidth: 450px),
         lg: (width: 50%, maxWidth: unset)
@@ -218,6 +223,33 @@ export default {
     @include padding.horizontal((
         xsm: 25
     ));
+    @include margin.right((
+      xsm: auto,
+        lg: unset
+    ));
+
+    .login,
+    .signup{
+      min-height: calc(100vh - 50px);
+    }
+
+    .signup{
+      :deep(.signup__form){
+        width: 100%;
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    .login{
+      :deep(.form__form){
+        width: 100%;
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
   }
 }
 </style>
