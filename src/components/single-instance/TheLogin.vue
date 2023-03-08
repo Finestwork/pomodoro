@@ -1,16 +1,18 @@
 <template>
   <div class="login">
     <TheLogo />
+    <BaseListAlert :lists="errors" :color-scheme="'danger'" v-if="errors.length !== 0" />
 
     <div>
       <p class="form__label">Please login to continue</p>
-      <form class="form__form">
+      <form class="form__form" @submit.prevent="submitForm">
         <BaseTextInput
           class="form__email"
           :label="'Email:'"
           :type="'email'"
           :id="'emailTxt'"
           :placeholder="'Enter email here'"
+          :validation-rules="{ required: true, isEmail: true }"
           v-model="emailText"
         >
           <template #leadingIcon>
@@ -23,6 +25,7 @@
           :type="'password'"
           :id="'passwordTxt'"
           :placeholder="'Enter password here'"
+          :validation-rules="{ required: true, min: 6 }"
           v-model="passwordText"
         >
           <template #leadingIcon>
@@ -53,6 +56,13 @@ import BaseTextInput from '@/components/global/forms/BaseTextInput.vue';
 import UserIcon from '@/components/icons/User.vue';
 import LockIcon from '@/components/icons/Lock.vue';
 import BasePlayfulButton from '@/components/global/buttons/BasePlayfulButton.vue';
+import BaseListAlert from '@/components/global/alerts/BaseListAlert.vue';
+import isEmpty from 'validator/es/lib/isEmpty';
+import isEmail from 'validator/es/lib/isEmail';
+
+// NPM
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import GoogleCodeErrors from '@/assets/js/auth/google-code-errors';
 
 export default {
   components: {
@@ -60,17 +70,65 @@ export default {
     BaseTextInput,
     UserIcon,
     LockIcon,
-    BasePlayfulButton
+    BasePlayfulButton,
+    BaseListAlert
   },
   data() {
     return {
       emailText: '',
       passwordText: '',
-      toggleBtnLoading: false
+      toggleBtnLoading: false,
+      errors: []
     };
   },
   methods: {
-    submitForm() {}
+    submitForm(e) {
+      e.currentTarget.blur(); // For bouncy effect
+      this.errors = [];
+      this.toggleBtnLoading = true;
+
+      // Validate errors here
+      if (isEmpty(this.emailText)) {
+        this.errors.push(`• Email field must not be empty.`);
+      }
+
+      if (isEmpty(this.passwordText)) {
+        this.errors.push(`• Password field must not be empty.`);
+      }
+
+      // Return if fields are empty
+      if (this.errors.length !== 0) {
+        this.toggleBtnLoading = false;
+        return;
+      }
+
+      if (!isEmail(this.emailText)) {
+        this.errors.push(`• Email field is not valid.`);
+      }
+
+      if (this.passwordText.length < 6) {
+        this.errors.push(`• Password must be at least 6 characters.`);
+      }
+
+      // Return if there are more errors
+      if (this.errors.length !== 0) {
+        this.toggleBtnLoading = false;
+        return;
+      }
+
+      //
+      signInWithEmailAndPassword(getAuth(), this.emailText, this.passwordText)
+        .then(() => {
+          this.toggleBtnLoading = false;
+        })
+        .catch((err) => {
+          if (err.code) {
+            this.errors.push(`• ${GoogleCodeErrors.getErrors[err.code]}`);
+          }
+
+          this.toggleBtnLoading = false;
+        });
+    }
   }
 };
 </script>

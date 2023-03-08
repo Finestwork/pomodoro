@@ -120,18 +120,17 @@ export default {
     },
 
     checkCurrentlyLoggedInUser() {
-      this.shouldShowForm = true;
       this.unsubscribeAuth = getAuth().onAuthStateChanged((user) => {
-        // if (user === null) {
-        //   this.shouldShowForm = true;
-        //   this.shouldShowHomePage = false;
-        //   if (this.$route.path === '/') this.$router.push({ name: 'Login' });
-        //   return;
-        // }
-        //
-        // this.shouldShowForm = false;
-        // this.shouldShowHomePage = true;
-        // this.$router.push({ name: 'LandingPage' });
+        if (user === null) {
+          this.shouldShowForm = true;
+          this.shouldShowHomePage = false;
+          if (this.$route.path === '/') this.$router.push({ name: 'Login' });
+          return;
+        }
+
+        this.shouldShowForm = false;
+        this.shouldShowHomePage = true;
+        this.$router.push({ name: 'LandingPage' });
       });
     },
 

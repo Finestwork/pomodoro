@@ -35,7 +35,8 @@
         :id="'signupPasswordTxt'"
         :placeholder="'Enter password here'"
         :validation-rules="{
-          min: 6
+          min: 6,
+          required: true
         }"
         v-model="passwordText"
       />
@@ -47,6 +48,7 @@
         :placeholder="'Confirm your password here'"
         :validation-rules="{
           min: 6,
+          required: true,
           sameWith: { element: '#signupPasswordTxt', fieldName: 'password' }
         }"
         v-model="confirmPasswordText"
@@ -106,10 +108,10 @@ export default {
 
       // Validate Fields
       [
-        { field: 'usernameText', message: `• Username field must not be empty` },
-        { field: 'emailText', message: `• Email field must not be empty` },
-        { field: 'passwordText', message: `• Password field must not be empty` },
-        { field: 'confirmPasswordText', message: `• Confirm password field must not be empty` }
+        { field: 'usernameText', message: `• Username field must not be empty.` },
+        { field: 'emailText', message: `• Email field must not be empty.` },
+        { field: 'passwordText', message: `• Password field must not be empty.` },
+        { field: 'confirmPasswordText', message: `• Confirm password field must not be empty.` }
       ].forEach((fieldObj) => {
         if (isEmpty(this[fieldObj.field])) {
           this.errors.push(fieldObj.message);
@@ -121,7 +123,7 @@ export default {
       }
 
       if (this.passwordText !== this.confirmPasswordText) {
-        this.errors.push('• Password fields is the same.');
+        this.errors.push('• Password fields is not the same.');
       }
 
       if (!isLength(this.passwordText, { min: 6 })) {
@@ -129,7 +131,7 @@ export default {
       }
 
       if (!isLength(this.confirmPasswordText, { min: 6 })) {
-        this.errors.push('• Confirm password must be greater than 5');
+        this.errors.push('• Confirm password must be greater than 5.');
       }
 
       // If there's an error, do not register the user
@@ -154,7 +156,7 @@ export default {
         .catch((err) => {
           this.toggleBtnLoading = false;
           if (err.code) {
-            this.errors.push(`• ${GoogleCodeErrors.getErrors[err.code]}`);
+            this.errors.push(`• ${GoogleCodeErrors.getErrors[err.code]}.`);
             return;
           }
 
