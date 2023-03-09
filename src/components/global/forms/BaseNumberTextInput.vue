@@ -1,12 +1,6 @@
 <template>
   <div class="number-text-input">
-    <input
-      ref="input"
-      type="number"
-      :value="modelValue"
-      @input="onInput"
-      :placeholder="placeholder"
-    />
+    <input ref="input" type="number" :placeholder="placeholder" :value="value" />
     <button type="button" class="number-text-input__btn-controls-up" @click="increment">
       <CaretUp />
     </button>
@@ -26,28 +20,15 @@ export default {
     CaretDown
   },
   props: {
-    modelValue: {
-      type: String
-    },
     placeholder: {
       type: String,
       required: true
+    },
+    value: {
+      type: [String, Number]
     }
   },
-  emits: ['update:modelValue'],
   methods: {
-    onInput() {
-      const VALUE = this.$refs.input.value;
-
-      // If input is invalid like an alphabetic letter, it will return empty string
-      if (VALUE === '') {
-        this.$refs.input.value = '';
-        this.$emit('update:modelValue', this.$refs.input.value);
-        return;
-      }
-
-      this.$emit('update:modelValue', this.$refs.input.value);
-    },
     increment() {
       const CURRENT_VALUE = this.$refs.input.value;
       this.$refs.input.value = (

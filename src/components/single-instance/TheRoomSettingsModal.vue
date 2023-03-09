@@ -22,35 +22,39 @@
     </div>
     <div class="modal__form-group-wrapper">
       <BaseNumericUpDownInput
+        ref="pomodoroDuration"
         class="modal__text-input-groups"
         label="Pomodoro Duration"
         placeholder="Pomodoro's duration"
         pop-msg="Determines how many minutes you want your pomodoro session to be, which can be adjusted based on personal preference and the nature of the task at hand."
-        v-model="pomodoroDuration"
+        :value="pomodoroDuration"
       />
 
       <BaseNumericUpDownInput
+        ref="pomodoros"
         class="modal__text-input-groups"
         label="Pomodoros before long break"
         placeholder="Pomodoros before long break"
         pop-msg="How many pomodoro you want before a long break?"
-        v-model="pomodoros"
+        :value="pomodoros"
       />
 
       <BaseNumericUpDownInput
+        ref="pomodoroShortBreak"
         class="modal__text-input-groups"
         label="Short break length"
         placeholder="Short break length"
         pop-msg="How long would you like your short break to be in between pomodoro sessions?"
-        v-model="pomodoroShortBreak"
+        :value="shortBreak"
       />
 
       <BaseNumericUpDownInput
+        ref="pomodoroLongBreak"
         class="modal__text-input-groups"
         label="Long break length"
         placeholder="Long break length"
         pop-msg="How long would you like your break to be after completing a set of pomodoros?"
-        v-model="pomodoroLongBreak"
+        :value="longBreak"
       />
     </div>
     <BaseButtonPlayful
@@ -90,41 +94,66 @@ export default {
   data() {
     const roomSettingsStore = useRoomSettingsStore();
     return {
-      pomodoroDuration: roomSettingsStore.pomodoroDuration.toString(),
-      pomodoros: roomSettingsStore.pomodoros.toString(),
-      pomodoroShortBreak: roomSettingsStore.shortBreakLength.toString(),
-      pomodoroLongBreak: roomSettingsStore.longBreakLength.toString(),
+      roomSettingsStore: useRoomSettingsStore(),
+      pomodoroDuration: roomSettingsStore.pomodoroDuration,
+      pomodoros: roomSettingsStore.pomodoros,
+      shortBreak: roomSettingsStore.shortBreakLength,
+      longBreak: roomSettingsStore.longBreakLength,
       isBtnLoading: false,
       shouldShowSuccessAlert: false,
       shouldShowDangerAlert: false
     };
   },
+  updated() {
+    this.pomodoroDuration = this.roomSettingsStore.pomodoroDuration;
+    this.pomodoros = this.roomSettingsStore.pomodoros;
+    this.shortBreak = this.roomSettingsStore.shortBreakLength;
+    this.longBreak = this.roomSettingsStore.longBreakLength;
+  },
   emits: ['onModalClose'],
   methods: {
     saveSettings() {
-      this.shouldShowDangerAlert = false;
+      this.shouldShowSuccessAlert = false;
       this.shouldShowDangerAlert = false;
       this.isBtnLoading = true;
 
+      const DURATION = this.$refs.pomodoroDuration.$refs.input.$refs.input.value;
+      const POMODOROS = this.$refs.pomodoros.$refs.input.$refs.input.value;
+      const SHORT_BREAK = this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value;
+      const LONG_BREAK = this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value;
+
       const DATA = {
         roomSettings: {
-          pomodoroDuration: parseInt(this.pomodoroDuration),
-          pomodoros: parseInt(this.pomodoros),
-          shortBreak: parseInt(this.pomodoroShortBreak),
-          longBreak: parseInt(this.pomodoroLongBreak)
+          pomodoroDuration: parseInt(DURATION),
+          pomodoros: parseInt(POMODOROS),
+          shortBreak: parseInt(SHORT_BREAK),
+          longBreak: parseInt(LONG_BREAK)
         }
       };
 
       UserCollection.update(DATA)
-        .then(() => (this.shouldShowSuccessAlert = true))
-        .catch(() => (this.shouldShowDangerAlert = true));
-
-      setTimeout(() => (this.isBtnLoading = false), 1000);
+        .then(() => {
+          this.roomSettingsStore.changePomodoroDuration(parseInt(DURATION));
+          this.roomSettingsStore.changeNumberOfPomodoro(parseInt(POMODOROS));
+          this.roomSettingsStore.changeShortBreakLength(parseInt(SHORT_BREAK));
+          this.roomSettingsStore.changeLongBreakLength(parseInt(LONG_BREAK));
+          this.shouldShowSuccessAlert = true;
+          this.isBtnLoading = false;
+        })
+        .catch(() => {
+          this.shouldShowDangerAlert = true;
+          this.isBtnLoading = false;
+        });
     },
     closeModal() {
-      this.shouldShowDangerAlert = false;
+      this.shouldShowSuccessAlert = false;
       this.shouldShowDangerAlert = false;
       this.isBtnLoading = false;
+
+      this.$refs.pomodoroDuration.$refs.input.$refs.input.value = this.pomodoroDuration;
+      this.$refs.pomodoros.$refs.input.$refs.input.value = this.pomodoros;
+      this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
+      this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
       this.$emit('onModalClose');
     }
   }

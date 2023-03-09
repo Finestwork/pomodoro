@@ -26,7 +26,10 @@ import ThePomoLabel from '@/components/single-instance/ThePomoLabel.vue';
 import BaseTimerText from '@/components/global/timer/BaseTimerText.vue';
 import ThePomodoroControls from '@/components/single-instance/ThePomodoroControls.vue';
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
-import PomodoroTimer from '@/assets/js/time-helpers/pomodoro-timer';
+import UserCollection from '@/assets/js/firestore/user-collection';
+
+// NPM
+import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 
 export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
@@ -35,24 +38,54 @@ export default {
       currentColorState: 'initial',
       isPlaying: false,
       roomSettingsStore: useRoomSettingsStore(),
-      pomodoroTimer: null,
-      timerText: ''
+      timerText: useRoomSettingsStore().timerText,
+      currentDuration: 0,
+      timerIntervalId: null
     };
   },
+  updated() {},
   mounted() {
-    this.pomodoroTimer = new PomodoroTimer(this.roomSettingsStore.pomodoroDuration);
-    this.timerText = `${this.roomSettingsStore.pomodoroDuration.toString().padStart(2, '0')}:00`;
+    UserCollection.getDocument()
+      .then((res) => {
+        const DOC = doc(getFirestore(), 'Users', res.docs[0].id);
+        this.unsubscribe = onSnapshot(DOC, (docs) => {
+          const { pomodoroDuration, pomodoros, longBreak, shortBreak } = docs.data().roomSettings;
+          this.roomSettingsStore.changePomodoroDuration(pomodoroDuration);
+          this.roomSettingsStore.changeNumberOfPomodoro(pomodoros);
+          this.roomSettingsStore.changeShortBreakLength(shortBreak);
+          this.roomSettingsStore.changeLongBreakLength(longBreak);
+          this.timerText = useRoomSettingsStore().timerText;
+          this.currentDuration = pomodoroDuration * 60; // Convert minutes to seconds
+        });
+      })
+      .catch(() => {
+        // Server error I guess?
+      });
   },
   methods: {
     togglePlay() {
       this.isPlaying = !this.isPlaying;
 
-      const updateTimer = (timer) => {
-        this.timerText = timer;
-      };
+      if (!this.isPlaying) {
+        clearInterval(this.timerIntervalId);
+        return;
+      }
 
-      if (this.isPlaying) this.pomodoroTimer.start(updateTimer);
-      else this.pomodoroTimer.pause();
+      this.timerIntervalId = setInterval(() => {
+        this.currentDuration--;
+        const MINUTES = Math.floor(this.currentDuration / 60);
+        const SECONDS = this.currentDuration % 60;
+        this.timerText = `${MINUTES.toString().padStart(2, '0')}:${SECONDS.toString().padStart(
+          2,
+          '0'
+        )}`;
+
+        if (this.currentDuration === 0) {
+          clearInterval(this.timerIntervalId);
+          this.timerIntervalId = false;
+          this.isPlaying = false;
+        }
+      }, 1000);
     }
   }
 };

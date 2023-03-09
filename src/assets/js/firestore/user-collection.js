@@ -20,18 +20,27 @@ export default class UserCollection {
   // Add new documents to the collection
   static update(data) {
     return new Promise((resolve, reject) => {
-      const { uid: USER_ID } = getAuth().currentUser;
-      const COLLECTION = collection(getFirestore(), 'Users');
-      const QUERY = query(COLLECTION, where('userId', '==', USER_ID));
-      getDocs(QUERY)
+      UserCollection.getDocument()
         .then((res) => {
           const DOC_REF = doc(getFirestore(), 'Users', res.docs[0].id);
-
           updateDoc(DOC_REF, data)
             .then((res) => resolve(res))
             .catch((err) => reject(err));
         })
         .catch((err) => reject(err));
+    });
+  }
+
+  // Gets document
+  static getDocument() {
+    const USER_ID = getAuth().currentUser.uid;
+    const COLLECTION = collection(getFirestore(), 'Users');
+    const QUERY = query(COLLECTION, where('userId', '==', USER_ID));
+
+    return new Promise((resolve, reject) => {
+      getDocs(QUERY)
+        .then((res) => resolve(res))
+        .then((err) => reject(err));
     });
   }
 }

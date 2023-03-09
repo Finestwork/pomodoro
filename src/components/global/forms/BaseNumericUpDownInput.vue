@@ -9,7 +9,7 @@
         <template #popper>{{ popMsg }}</template>
       </VTooltip>
     </div>
-    <BaseNumberTextInput :placeholder="placeholder" @input="onInput" v-model="inputValue" />
+    <BaseNumberTextInput ref="input" :placeholder="placeholder" :value="value" />
   </div>
 </template>
 
@@ -23,9 +23,6 @@ export default {
     Question
   },
   props: {
-    modelValue: {
-      type: String
-    },
     label: {
       type: String,
       required: true
@@ -37,17 +34,9 @@ export default {
     popMsg: {
       type: String,
       required: true
-    }
-  },
-  data() {
-    return {
-      inputValue: this.modelValue
-    };
-  },
-  emits: ['update:modelValue'],
-  methods: {
-    onInput() {
-      this.$emit('update:modelValue', this.inputValue);
+    },
+    value: {
+      type: [String, Number]
     }
   }
 };

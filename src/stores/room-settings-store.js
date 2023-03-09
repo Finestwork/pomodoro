@@ -7,6 +7,11 @@ const useRoomSettingsStore = defineStore('roomSettingsStore', {
     shortBreakLength: 5, // in minutes
     longBreakLength: 15 // in minutes
   }),
+  getters: {
+    timerText() {
+      return `${this.pomodoroDuration.toString().padStart(2, '0')}:00`;
+    }
+  },
   actions: {
     changeNumberOfPomodoro(pomodoros) {
       this.pomodoros = pomodoros;
