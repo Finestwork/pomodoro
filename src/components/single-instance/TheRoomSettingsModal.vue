@@ -9,19 +9,19 @@
     <div class="modal__form-group-wrapper">
       <div class="modal__text-input-groups">
         <p class="form-group__lbl">Pomodoro length</p>
-        <BaseNumberTextInput placeholder="Pomodoro length" v-model="pomodoroLength" />
+        <BaseNumberTextInput placeholder="Pomodoro length" v-model="pomodoroDuration" />
       </div>
       <div class="modal__text-input-groups">
         <p class="form-group__lbl">Pomodoros before long break</p>
-        <BaseNumberTextInput placeholder="Pomodoros before long break" v-model="pomodoroLength" />
+        <BaseNumberTextInput placeholder="Pomodoros before long break" v-model="pomodoros" />
       </div>
       <div class="modal__text-input-groups">
         <p class="form-group__lbl">Short break length</p>
-        <BaseNumberTextInput placeholder="Short-break length" v-model="pomodoroLength" />
+        <BaseNumberTextInput placeholder="Short-break length" v-model="pomodoroShortBreak" />
       </div>
       <div class="modal__text-input-groups">
         <p class="form-group__lbl">Long break length</p>
-        <BaseNumberTextInput placeholder="Long break length" v-model="pomodoroLength" />
+        <BaseNumberTextInput placeholder="Long break length" v-model="pomodoroLongBreak" />
       </div>
     </div>
     <BaseButtonPlayful class="modal__save-btn" type="button">
@@ -35,6 +35,7 @@ import Modal from '@/components/global/Modal.vue';
 import XMark from '@/components/icons/XMark.vue';
 import BaseNumberTextInput from '@/components/global/forms/BaseNumberTextInput.vue';
 import BaseButtonPlayful from '@/components/global/buttons/BaseButtonPlayful.vue';
+import { useRoomSettingsStore } from '@/stores/room-settings-store';
 
 export default {
   components: {
@@ -50,8 +51,12 @@ export default {
     }
   },
   data() {
+    const roomSettingsStore = useRoomSettingsStore();
     return {
-      pomodoroLength: '25' // in minutes
+      pomodoroDuration: roomSettingsStore.pomodoroDuration.toString(),
+      pomodoros: roomSettingsStore.pomodoros.toString(),
+      pomodoroShortBreak: roomSettingsStore.shortBreakLength.toString(),
+      pomodoroLongBreak: roomSettingsStore.longBreakLength.toString()
     };
   },
   emits: ['onModalClose'],

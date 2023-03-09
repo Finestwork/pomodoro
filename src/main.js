@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 import { initializeApp } from 'firebase/app';
@@ -18,4 +19,4 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-createApp(App).use(router).use(FloatingVue).mount('body');
+createApp(App).use(router).use(createPinia()).use(FloatingVue).mount('body');

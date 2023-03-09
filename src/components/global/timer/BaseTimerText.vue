@@ -1,6 +1,6 @@
 <template>
   <div :class="getRootClass">
-    <span class="timer__text" ref="timerText">24:35</span>
+    <span class="timer__text" ref="timerText">{{ timerText }}</span>
   </div>
 </template>
 
@@ -15,6 +15,10 @@ export default {
     },
     // initial, focus, short-break, long-break
     colorState: {
+      type: String,
+      required: true
+    },
+    timerText: {
       type: String,
       required: true
     }

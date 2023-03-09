@@ -5,7 +5,11 @@
 
       <div class="homepage__timer-wrapper">
         <ThePomoLabel class="homepage__pomo-label" />
-        <BaseTimerText :color-state="currentColorState" :is-playing="isPlaying" />
+        <BaseTimerText
+          :color-state="currentColorState"
+          :is-playing="isPlaying"
+          :timer-text="timerText"
+        />
         <ThePomodoroControls
           class="homepage__pomo-controls"
           :current-color-state="currentColorState"
@@ -21,18 +25,31 @@ import TheNavbar from '@/components/single-instance/TheNavbar.vue';
 import ThePomoLabel from '@/components/single-instance/ThePomoLabel.vue';
 import BaseTimerText from '@/components/global/timer/BaseTimerText.vue';
 import ThePomodoroControls from '@/components/single-instance/ThePomodoroControls.vue';
+import PomodoroTimer from '@/assets/js/time-helpers/pomodoro-timer';
 
 export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
   data() {
     return {
       currentColorState: 'initial',
-      isPlaying: false
+      isPlaying: false,
+      pomodoroTimer: null,
+      timerText: '25:00' // Change this later based on pinia API
     };
+  },
+  mounted() {
+    this.pomodoroTimer = new PomodoroTimer(25);
   },
   methods: {
     togglePlay() {
       this.isPlaying = !this.isPlaying;
+
+      const updateTimer = (timer) => {
+        this.timerText = timer;
+      };
+
+      if (this.isPlaying) this.pomodoroTimer.start(updateTimer);
+      else this.pomodoroTimer.pause();
     }
   }
 };

@@ -61,7 +61,9 @@ export default {
             easing: 'easeOutQuint',
             scale: 0,
             opacity: 0,
-            complete: () => (this.$refs.root.style.display = null)
+            complete: () => {
+              if (this.$refs.root) this.$refs.root.style.display = null;
+            }
           });
         }
       },
