@@ -8,26 +8,34 @@
     </div>
     <div class="modal__form-group-wrapper">
       <BaseNumericUpDownInput
+        class="modal__text-input-groups"
         label="Pomodoro Duration"
         placeholder="Pomodoro's duration"
+        pop-msg="Determines how many minutes you want your pomodoro session to be, which can be adjusted based on personal preference and the nature of the task at hand."
         v-model="pomodoroDuration"
       />
 
       <BaseNumericUpDownInput
+        class="modal__text-input-groups"
         label="Pomodoros before long break"
         placeholder="Pomodoros before long break"
+        pop-msg="How many pomodoro you want before a long break?"
         v-model="pomodoros"
       />
 
       <BaseNumericUpDownInput
+        class="modal__text-input-groups"
         label="Short break length"
         placeholder="Short break length"
+        pop-msg="How long would you like your short break to be in between pomodoro sessions?"
         v-model="pomodoroShortBreak"
       />
 
       <BaseNumericUpDownInput
+        class="modal__text-input-groups"
         label="Long break length"
         placeholder="Long break length"
+        pop-msg="How long would you like your break to be after completing a set of pomodoros?"
         v-model="pomodoroLongBreak"
       />
     </div>
@@ -46,7 +54,6 @@
 import Modal from '@/components/global/Modal.vue';
 import XMark from '@/components/icons/XMark.vue';
 import BaseNumericUpDownInput from '@/components/global/forms/BaseNumericUpDownInput.vue';
-import BaseNumberTextInput from '@/components/global/forms/BaseNumberTextInput.vue';
 import BaseButtonPlayful from '@/components/global/buttons/BaseButtonPlayful.vue';
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
 import UserCollection from '@/assets/js/firestore/user-collection';
@@ -56,7 +63,6 @@ export default {
     Modal,
     XMark,
     BaseNumericUpDownInput,
-    BaseNumberTextInput,
     BaseButtonPlayful
   },
   props: {
@@ -183,35 +189,12 @@ export default {
   }
 
   &__text-input-groups {
-    @include all-properties.init((
-        xsm: (
-            display: flex,
-            flex-direction: column
-        ),
-        450: (
-            flex-direction: row,
-            justify-content: space-between,
-            align-items: center
-        )
-    ));
     @include margin.bottom((
         xsm: 30
     ));
 
     &:last-of-type {
       margin-bottom: 0;
-    }
-
-    .form-group__lbl {
-      font-weight: 600;
-      color: map.get(main.$primary, 900);
-      @include font-size.responsive((
-          xsm: map.get(major-second.$scale, 3)
-      ));
-      @include margin.bottom((
-          xsm: 15,
-          450: 0
-      ));
     }
   }
   &__save-btn{

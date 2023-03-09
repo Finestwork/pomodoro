@@ -37,6 +37,8 @@ main {
 .btn-tooltip.v-popper--theme-tooltip {
   font-weight: 600;
   font-size: pixels.toRem(map.get(major-second.$scale, 2));
+  max-width: 250px;
+  line-height: 1.5;
 
   .v-popper__inner {
     background: map.get(main.$primary, 500);
