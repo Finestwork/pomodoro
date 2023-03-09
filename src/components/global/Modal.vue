@@ -22,6 +22,8 @@ export default {
     showModal: {
       handler(showModal) {
         if (showModal) {
+          if (!this.$refs.root) return;
+
           this.$refs.root.style.display = 'block';
 
           Object.assign(this.$refs.bg.style, {

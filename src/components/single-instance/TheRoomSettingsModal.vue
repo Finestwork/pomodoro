@@ -7,24 +7,36 @@
       </button>
     </div>
     <div class="modal__form-group-wrapper">
-      <div class="modal__text-input-groups">
-        <p class="form-group__lbl">Pomodoro length</p>
-        <BaseNumberTextInput placeholder="Pomodoro length" v-model="pomodoroDuration" />
-      </div>
-      <div class="modal__text-input-groups">
-        <p class="form-group__lbl">Pomodoros before long break</p>
-        <BaseNumberTextInput placeholder="Pomodoros before long break" v-model="pomodoros" />
-      </div>
-      <div class="modal__text-input-groups">
-        <p class="form-group__lbl">Short break length</p>
-        <BaseNumberTextInput placeholder="Short-break length" v-model="pomodoroShortBreak" />
-      </div>
-      <div class="modal__text-input-groups">
-        <p class="form-group__lbl">Long break length</p>
-        <BaseNumberTextInput placeholder="Long break length" v-model="pomodoroLongBreak" />
-      </div>
+      <BaseNumericUpDownInput
+        label="Pomodoro Duration"
+        placeholder="Pomodoro's duration"
+        v-model="pomodoroDuration"
+      />
+
+      <BaseNumericUpDownInput
+        label="Pomodoros before long break"
+        placeholder="Pomodoros before long break"
+        v-model="pomodoros"
+      />
+
+      <BaseNumericUpDownInput
+        label="Short break length"
+        placeholder="Short break length"
+        v-model="pomodoroShortBreak"
+      />
+
+      <BaseNumericUpDownInput
+        label="Long break length"
+        placeholder="Long break length"
+        v-model="pomodoroLongBreak"
+      />
     </div>
-    <BaseButtonPlayful class="modal__save-btn" type="button" @click="saveSettings">
+    <BaseButtonPlayful
+      class="modal__save-btn"
+      type="button"
+      :is-loading="isBtnLoading"
+      @click="saveSettings"
+    >
       <template #text>Save</template>
     </BaseButtonPlayful>
   </Modal>
@@ -33,14 +45,17 @@
 <script>
 import Modal from '@/components/global/Modal.vue';
 import XMark from '@/components/icons/XMark.vue';
+import BaseNumericUpDownInput from '@/components/global/forms/BaseNumericUpDownInput.vue';
 import BaseNumberTextInput from '@/components/global/forms/BaseNumberTextInput.vue';
 import BaseButtonPlayful from '@/components/global/buttons/BaseButtonPlayful.vue';
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
+import UserCollection from '@/assets/js/firestore/user-collection';
 
 export default {
   components: {
     Modal,
     XMark,
+    BaseNumericUpDownInput,
     BaseNumberTextInput,
     BaseButtonPlayful
   },
@@ -56,12 +71,28 @@ export default {
       pomodoroDuration: roomSettingsStore.pomodoroDuration.toString(),
       pomodoros: roomSettingsStore.pomodoros.toString(),
       pomodoroShortBreak: roomSettingsStore.shortBreakLength.toString(),
-      pomodoroLongBreak: roomSettingsStore.longBreakLength.toString()
+      pomodoroLongBreak: roomSettingsStore.longBreakLength.toString(),
+      isBtnLoading: false
     };
   },
   emits: ['onModalClose'],
   methods: {
-    saveSettings() {},
+    saveSettings() {
+      this.isBtnLoading = true;
+
+      const DATA = {
+        roomSettings: {
+          pomodoroDuration: parseInt(this.pomodoroDuration),
+          pomodoros: parseInt(this.pomodoros),
+          shortBreak: parseInt(this.pomodoroShortBreak),
+          longBreak: parseInt(this.pomodoroLongBreak)
+        }
+      };
+
+      UserCollection.update(DATA);
+
+      setTimeout(() => (this.isBtnLoading = false), 1000);
+    },
     closeModal() {
       this.$emit('onModalClose');
     }
