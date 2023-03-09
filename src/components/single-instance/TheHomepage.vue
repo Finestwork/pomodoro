@@ -25,6 +25,7 @@ import TheNavbar from '@/components/single-instance/TheNavbar.vue';
 import ThePomoLabel from '@/components/single-instance/ThePomoLabel.vue';
 import BaseTimerText from '@/components/global/timer/BaseTimerText.vue';
 import ThePomodoroControls from '@/components/single-instance/ThePomodoroControls.vue';
+import { useRoomSettingsStore } from '@/stores/room-settings-store';
 import PomodoroTimer from '@/assets/js/time-helpers/pomodoro-timer';
 
 export default {
@@ -33,12 +34,14 @@ export default {
     return {
       currentColorState: 'initial',
       isPlaying: false,
+      roomSettingsStore: useRoomSettingsStore(),
       pomodoroTimer: null,
-      timerText: '25:00' // Change this later based on pinia API
+      timerText: ''
     };
   },
   mounted() {
-    this.pomodoroTimer = new PomodoroTimer(25);
+    this.pomodoroTimer = new PomodoroTimer(this.roomSettingsStore.pomodoroDuration);
+    this.timerText = `${this.roomSettingsStore.pomodoroDuration.toString().padStart(2, '0')}:00`;
   },
   methods: {
     togglePlay() {
