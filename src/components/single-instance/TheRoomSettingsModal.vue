@@ -24,7 +24,7 @@
         <BaseNumberTextInput placeholder="Long break length" v-model="pomodoroLongBreak" />
       </div>
     </div>
-    <BaseButtonPlayful class="modal__save-btn" type="button">
+    <BaseButtonPlayful class="modal__save-btn" type="button" @click="saveSettings">
       <template #text>Save</template>
     </BaseButtonPlayful>
   </Modal>
@@ -61,6 +61,7 @@ export default {
   },
   emits: ['onModalClose'],
   methods: {
+    saveSettings() {},
     closeModal() {
       this.$emit('onModalClose');
     }

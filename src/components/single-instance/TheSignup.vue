@@ -74,13 +74,15 @@
 import BaseTextInput from '@/components/global/forms/BaseTextInput.vue';
 import BasePlayfulButton from '@/components/global/buttons/BaseButtonPlayful.vue';
 import BaseListAlert from '@/components/global/alerts/BaseListAlert.vue';
+import GoogleCodeErrors from '@/assets/js/auth/google-code-errors';
+import { useRoomSettingsStore } from '@/stores/room-settings-store';
+import UserCollection from '@/assets/js/firestore/user-collection';
 
 // NPM
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import isEmpty from 'validator/es/lib/isEmpty';
 import isEmail from 'validator/es/lib/isEmail';
 import isLength from 'validator/es/lib/isLength';
-import GoogleCodeErrors from '@/assets/js/auth/google-code-errors';
 
 export default {
   components: {
@@ -141,12 +143,25 @@ export default {
 
       // validate
       createUserWithEmailAndPassword(getAuth(), this.emailText, this.passwordText)
-        .then(() => {
+        .then((res) => {
           this.toggleBtnLoading = false;
 
           updateProfile(getAuth().currentUser, { displayName: this.usernameText })
             .then(() => {
-              this.$emit('successfullyRegistered');
+              const roomSettingsStore = useRoomSettingsStore();
+              const USER_ID = res.user.uid;
+              const DATA = {
+                userId: USER_ID,
+                displayName: this.usernameText,
+                roomSettings: {
+                  pomodoroDuration: roomSettingsStore.pomodoroDuration,
+                  pomodoros: roomSettingsStore.pomodoros,
+                  shortBreak: roomSettingsStore.shortBreakLength,
+                  longBreak: roomSettingsStore.longBreakLength
+                }
+              };
+
+              UserCollection.addData(DATA);
             })
             .catch(() => {
               this.$emit('updateProfileFailed');
