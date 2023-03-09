@@ -1,9 +1,23 @@
 <template>
-  <Modal class="" :show-modal="showModal">
+  <Modal :show-modal="showModal">
+    <BaseSingleLineAlert
+      class="modal__success-alert"
+      color-scheme="success"
+      v-if="shouldShowSuccessAlert"
+    >
+      Successfully updated your pomodoro settings!
+    </BaseSingleLineAlert>
+    <BaseSingleLineAlert
+      class="modal__success-alert"
+      color-scheme="danger"
+      v-if="shouldShowDangerAlert"
+    >
+      Uh-oh! Unable to update your pomodoro settings but don't worry you can try again later.
+    </BaseSingleLineAlert>
     <div class="modal__header">
       <h2 class="modal__title">Settings</h2>
       <button class="modal__close-btn" type="button" @click="closeModal">
-        <XMark />
+        <XMarkIcon />
       </button>
     </div>
     <div class="modal__form-group-wrapper">
@@ -52,18 +66,20 @@
 
 <script>
 import Modal from '@/components/global/Modal.vue';
-import XMark from '@/components/icons/XMark.vue';
+import XMarkIcon from '@/components/icons/XMark.vue';
 import BaseNumericUpDownInput from '@/components/global/forms/BaseNumericUpDownInput.vue';
 import BaseButtonPlayful from '@/components/global/buttons/BaseButtonPlayful.vue';
+import BaseSingleLineAlert from '@/components/global/alerts/BaseSingleLineAlert.vue';
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
 import UserCollection from '@/assets/js/firestore/user-collection';
 
 export default {
   components: {
     Modal,
-    XMark,
+    XMarkIcon,
     BaseNumericUpDownInput,
-    BaseButtonPlayful
+    BaseButtonPlayful,
+    BaseSingleLineAlert
   },
   props: {
     showModal: {
@@ -78,12 +94,16 @@ export default {
       pomodoros: roomSettingsStore.pomodoros.toString(),
       pomodoroShortBreak: roomSettingsStore.shortBreakLength.toString(),
       pomodoroLongBreak: roomSettingsStore.longBreakLength.toString(),
-      isBtnLoading: false
+      isBtnLoading: false,
+      shouldShowSuccessAlert: false,
+      shouldShowDangerAlert: false
     };
   },
   emits: ['onModalClose'],
   methods: {
     saveSettings() {
+      this.shouldShowDangerAlert = false;
+      this.shouldShowDangerAlert = false;
       this.isBtnLoading = true;
 
       const DATA = {
@@ -95,11 +115,16 @@ export default {
         }
       };
 
-      UserCollection.update(DATA);
+      UserCollection.update(DATA)
+        .then(() => (this.shouldShowSuccessAlert = true))
+        .catch(() => (this.shouldShowDangerAlert = true));
 
       setTimeout(() => (this.isBtnLoading = false), 1000);
     },
     closeModal() {
+      this.shouldShowDangerAlert = false;
+      this.shouldShowDangerAlert = false;
+      this.isBtnLoading = false;
       this.$emit('onModalClose');
     }
   }
@@ -124,7 +149,17 @@ export default {
     width: 95%;
     max-width: 600px;
     @include padding.all-sides((
-      xsm: 15
+        xsm: 15
+    ));
+  }
+
+  &__success-alert,
+  &__danger-alert {
+    @include margin.top((
+        xsm: 10
+    ));
+    @include margin.bottom((
+        xsm: 25
     ));
   }
 
@@ -197,15 +232,17 @@ export default {
       margin-bottom: 0;
     }
   }
-  &__save-btn{
+
+  &__save-btn {
     margin-left: auto;
     width: 100px;
     @include margin.top((
-      xsm: 25
+        xsm: 25
     ));
     @include padding.vertical((
-      xsm: 13
+        xsm: 13
     ));
   }
+
 }
 </style>
