@@ -76,7 +76,7 @@ export default {
   .timer {
     &__text {
       font-feature-settings: "kern";
-      font-variation-settings: "wght" 900, "wdth" 110, "opsz" 14;
+      font-variation-settings: "wght" 400, "wdth" 110, "opsz" 14;
       @include font-size.responsive((
           xsm: 80,
           450: 150,
