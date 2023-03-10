@@ -32,10 +32,12 @@ export default {
 <style lang="scss" scoped>
 @use 'sass:map';
 @use '../../../assets/scss/1-settings/css-properties/colors/main';
-@use '../../../assets/scss/1-settings/css-properties/box-shadow/transition' as box-shadow-transition;
 @use '../../../assets/scss/2-tools/mixins/css-properties/padding';
 @use '../../../assets/scss/2-tools/mixins/css-properties/margin';
 @use '../../../assets/scss/2-tools/mixins/css-properties/box-shadow/primary' as box-shadow-primary;
+@use '../../../assets/scss/2-tools/mixins/css-properties/box-shadow/secondary' as
+  box-shadow-secondary;
+@use '../../../assets/scss/2-tools/mixins/css-properties/box-shadow/tertiary' as box-shadow-tertiary;
 
 // prettier-ignore
 .btn-icon {
@@ -45,7 +47,7 @@ export default {
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  transition: box-shadow-transition.$transition-linear;
+  transition: all .15s ease-in-out;
   @include padding.all-sides((
     xsm: 9.5
   ));
@@ -64,10 +66,6 @@ export default {
     }
   }
 
-  &:focus{
-    @include box-shadow-primary.lightness(lightest, md);
-  }
-
   :deep(svg) {
     display: block;
     width: 100%;
@@ -78,6 +76,11 @@ export default {
   /* States */
   &.focus{
     background-color: map.get(main.$primary, 100);
+    &:focus{
+      @include box-shadow-primary.lightness(lightest, md);
+    }
+
+    &:focus,
     &:hover{
       background-color: map.get(main.$primary, 500);
     }
@@ -88,6 +91,11 @@ export default {
 
   &.short-break{
     background-color: map.get(main.$secondary, 100);
+    &:focus{
+      @include box-shadow-secondary.lightness(light, md);
+    }
+
+    &:focus,
     &:hover{
       background-color: map.get(main.$secondary, 500);
     }
@@ -98,6 +106,11 @@ export default {
 
   &.long-break{
     background-color: map.get(main.$tertiary, 100);
+    &:focus{
+      @include box-shadow-tertiary.lightness(light, md);
+    }
+
+    &:focus,
     &:hover{
       background-color: map.get(main.$tertiary, 500);
     }
