@@ -14,6 +14,7 @@
           class="homepage__pomo-controls"
           :current-color-state="currentColorState"
           :is-playing="isPlaying"
+          :next-state="nextState"
           @onTogglePlay="togglePlay"
           @nextSession="nextSession"
         />

@@ -14,7 +14,7 @@
         <ForwardIcon />
       </button>
 
-      <template #popper>Next</template>
+      <template #popper>{{ getNextState }}</template>
     </VTooltip>
   </div>
 </template>
@@ -42,6 +42,10 @@ export default {
     isPlaying: {
       type: Boolean,
       required: true
+    },
+    nextState: {
+      type: String,
+      required: true
     }
   },
   emits: ['onTogglePlay', 'nextSession'],
@@ -58,6 +62,19 @@ export default {
   computed: {
     getRootClass() {
       return `pomodoro-controls ${this.currentColorState}`;
+    },
+    getNextState() {
+      // short break -> Short Break
+      // short -> Short
+
+      const FORMATTED_WORD = this.nextState
+        .split(' ')
+        .map((word) => {
+          return `${word.substring(0, 1).toUpperCase()}${word.substring(1)}`;
+        })
+        .join(' ');
+
+      return `Next Session: ${FORMATTED_WORD}`;
     }
   }
 };
