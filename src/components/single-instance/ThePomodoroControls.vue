@@ -34,7 +34,7 @@ export default {
     ForwardIcon
   },
   props: {
-    // initial, focus, short-break, long-break
+    // focus, short break, long break
     currentColorState: {
       type: String,
       required: true
@@ -64,9 +64,6 @@ export default {
       return `pomodoro-controls ${this.currentColorState}`;
     },
     getNextState() {
-      // short break -> Short Break
-      // short -> Short
-
       const FORMATTED_WORD = this.nextState
         .split(' ')
         .map((word) => {
@@ -156,7 +153,7 @@ export default {
   }
 
   /* States */
-  &.initial {
+  &.focus {
     @include change-state((
         play: map.get(main.$primary, 300),
         playIcon: map.get(main.$primary, 900),

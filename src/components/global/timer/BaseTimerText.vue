@@ -13,7 +13,7 @@ export default {
       type: Boolean,
       required: true
     },
-    // initial, focus, short-break, long-break
+    // focus, short break, long break
     colorState: {
       type: String,
       required: true
@@ -85,7 +85,7 @@ export default {
     }
   }
 
-  &.initial {
+  &.focus {
     color: darken(map.get(main.$primary, 900), 3%);
   }
 }

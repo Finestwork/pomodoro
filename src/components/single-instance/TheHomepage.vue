@@ -4,7 +4,7 @@
       <TheNavbar />
 
       <div class="homepage__timer-wrapper">
-        <ThePomoLabel class="homepage__pomo-label" />
+        <ThePomoLabel class="homepage__pomo-label" :color-state="currentColorState" />
         <BaseTimerText
           :color-state="currentColorState"
           :is-playing="isPlaying"
@@ -39,7 +39,7 @@ export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
   data() {
     return {
-      currentColorState: 'initial',
+      currentColorState: 'focus',
       isPlaying: false,
       roomSettingsStore: useRoomSettingsStore(),
       timerText: useRoomSettingsStore().timerText,
@@ -63,6 +63,7 @@ export default {
           // Everytime the settings is updated, this will reset the pomodoro sessions
           clearInterval(this.timerIntervalId);
           this.isPlaying = false;
+          this.currentColorState = 'focus';
           this.currentDuration = pomodoroDuration * 60; // Convert minutes to seconds
           this.timerText = TimerHelper.formatString(this.currentDuration);
           this.nextState = 'short break';
@@ -101,6 +102,7 @@ export default {
       }
 
       if (this.roomSettingsStore.isNextSessionLongBreak) {
+        this.currentColorState = 'long break';
         this.nextState = 'pomodoro';
         this.currentDuration = this.roomSettingsStore.longBreakLength * 60;
         this.roomSettingsStore.resetPomodoroLeft();
@@ -112,10 +114,12 @@ export default {
         case 'short break':
           this.currentDuration = this.roomSettingsStore.shortBreakLength * 60;
           this.nextState = 'pomodoro';
+          this.currentColorState = 'short break';
           break;
         case 'pomodoro':
           this.currentDuration = this.roomSettingsStore.pomodoroDuration * 60;
           this.nextState = 'short break';
+          this.currentColorState = 'focus';
           this.roomSettingsStore.decrementPomodoroLeft();
           break;
       }
