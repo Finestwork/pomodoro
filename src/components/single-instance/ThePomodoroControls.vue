@@ -1,16 +1,16 @@
 <template>
   <div :class="getRootClass">
     <VTooltip>
-      <button class="control__play" type="button" @click="togglePlay">
+      <button class="control__play" type="button" @click="togglePlay" ref="button">
         <PlayIcon v-if="!isPlaying" />
         <PauseIcon v-if="isPlaying" />
       </button>
 
-      <template #popper>Play</template>
+      <template #popper>{{ isPlaying ? 'Pause' : 'Play' }}</template>
     </VTooltip>
 
     <VTooltip>
-      <button class="control__next" type="button">
+      <button class="control__next" type="button" @click="nextSession">
         <ForwardIcon />
       </button>
 
@@ -23,6 +23,9 @@
 import PlayIcon from '@/components/icons/Play.vue';
 import PauseIcon from '@/components/icons/Pause.vue';
 import ForwardIcon from '@/components/icons/Forward.vue';
+
+// NPM
+import AnimationHelper from '@/assets/js/helpers/animation-helper';
 
 export default {
   components: {
@@ -42,11 +45,18 @@ export default {
       isPlaying: false
     };
   },
-  emits: ['onTogglePlay'],
+  emits: ['onTogglePlay', 'nextSession'],
   methods: {
-    togglePlay() {
+    togglePlay(e) {
       this.isPlaying = !this.isPlaying;
+      AnimationHelper.bounce(e.currentTarget);
+
       this.$emit('onTogglePlay', this.isPlaying);
+    },
+    nextSession(e) {
+      this.isPlaying = false;
+      AnimationHelper.bounce(e.currentTarget);
+      this.$emit('nextSession');
     }
   },
   computed: {
