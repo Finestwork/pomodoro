@@ -1,5 +1,5 @@
 <template>
-  <button class="btn--playful" :type="type" :disabled="isLoading">
+  <button :class="getRootClass" :type="type" :disabled="isLoading">
     <span class="btn__main-content" v-if="!isLoading">
       <span class="btn__leading-icon" v-if="canDisplayLeadingIcon">
         <slot name="leadingIcon"></slot>
@@ -34,6 +34,11 @@ export default {
     loaderText: {
       type: String,
       default: 'Loading'
+    },
+    // focus, short-break, long-break
+    colorState: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -65,6 +70,9 @@ export default {
     }
   },
   computed: {
+    getRootClass() {
+      return `btn--playful ${this.colorState}`;
+    },
     canDisplayLeadingIcon() {
       return !!this.$slots.leadingIcon;
     },
@@ -91,20 +99,12 @@ export default {
   border: none;
   cursor: pointer;
   border-radius: 7px;
-  padding: pixels.toRem(10);
-  box-shadow: 0 5px 0 rgba(map.get(main.$primary, 500), 0.5);
   transition: all 0.15s ease-in-out;
-  background-color: map.get(main.$primary, 500);
-
-  &:focus,
-  &:hover {
-    background-color: darken(map.get(main.$primary, 500), 3%);
-  }
+  padding: pixels.toRem(10);
 
   &:focus {
     outline: none;
     transform: translateY(3px);
-    box-shadow: 0 2px 0 rgba(map.get(main.$primary, 500), 0.5);
   }
 
   &:disabled {
@@ -126,11 +126,13 @@ export default {
     &__trailing-icon {
       width: 13px;
       height: 13px;
-      svg {
+      :deep(svg) {
         display: block;
         width: 100%;
         height: 100%;
-        fill: white;
+        path {
+          fill: white;
+        }
       }
     }
     &__leading-icon {
@@ -160,6 +162,56 @@ export default {
           font-size: pixels.toRem(map.get(major-second.$scale, 3));
         }
       }
+    }
+  }
+
+  /* States */
+  &.focus {
+    box-shadow: 0 5px 0 rgba(map.get(main.$primary, 500), 0.5);
+    background-color: map.get(main.$primary, 500);
+    &:focus {
+      box-shadow: 0 2px 0 rgba(map.get(main.$primary, 500), 0.5);
+    }
+
+    &:focus,
+    &:hover {
+      background-color: darken(map.get(main.$primary, 500), 3%);
+    }
+
+    &:disabled {
+      background-color: lighten(map.get(main.$primary, 500), 10%);
+    }
+  }
+  &.short-break {
+    box-shadow: 0 5px 0 rgba(map.get(main.$secondary, 500), 0.5);
+    background-color: map.get(main.$secondary, 500);
+    &:focus {
+      box-shadow: 0 2px 0 rgba(map.get(main.$secondary, 500), 0.5);
+    }
+
+    &:focus,
+    &:hover {
+      background-color: darken(map.get(main.$secondary, 500), 3%);
+    }
+
+    &:disabled {
+      background-color: lighten(map.get(main.$secondary, 500), 10%);
+    }
+  }
+  &.long-break {
+    box-shadow: 0 5px 0 rgba(map.get(main.$tertiary, 500), 0.5);
+    background-color: map.get(main.$tertiary, 500);
+    &:focus {
+      box-shadow: 0 2px 0 rgba(map.get(main.$tertiary, 500), 0.5);
+    }
+
+    &:focus,
+    &:hover {
+      background-color: darken(map.get(main.$tertiary, 500), 3%);
+    }
+
+    &:disabled {
+      background-color: lighten(map.get(main.$tertiary, 500), 10%);
     }
   }
 }

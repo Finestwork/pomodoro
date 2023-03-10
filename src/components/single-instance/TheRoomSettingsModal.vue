@@ -1,5 +1,5 @@
 <template>
-  <Modal :show-modal="showModal">
+  <Modal :show-modal="showModal" :color-state="colorState">
     <BaseSingleLineAlert
       class="modal__success-alert"
       color-scheme="success"
@@ -27,6 +27,7 @@
         label="Pomodoro Duration"
         placeholder="Pomodoro's duration"
         pop-msg="Determines how many minutes you want your pomodoro session to be, which can be adjusted based on personal preference and the nature of the task at hand."
+        :color-state="colorState"
         :value="pomodoroDuration"
       />
 
@@ -36,6 +37,7 @@
         label="Pomodoros before long break"
         placeholder="Pomodoros before long break"
         pop-msg="How many pomodoro you want before a long break?"
+        :color-state="colorState"
         :value="pomodoros"
       />
 
@@ -45,6 +47,7 @@
         label="Short break length"
         placeholder="Short break length"
         pop-msg="How long would you like your short break to be in between pomodoro sessions?"
+        :color-state="colorState"
         :value="shortBreak"
       />
 
@@ -54,6 +57,7 @@
         label="Long break length"
         placeholder="Long break length"
         pop-msg="How long would you like your break to be after completing a set of pomodoros?"
+        :color-state="colorState"
         :value="longBreak"
       />
     </div>
@@ -61,6 +65,7 @@
       class="modal__save-btn"
       type="button"
       :is-loading="isBtnLoading"
+      :color-state="colorState"
       @click="saveSettings"
     >
       <template #text>Save</template>
@@ -88,6 +93,11 @@ export default {
   props: {
     showModal: {
       type: Boolean,
+      required: true
+    },
+    // focus, short-break, long-break
+    colorState: {
+      type: String,
       required: true
     }
   },

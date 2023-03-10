@@ -1,5 +1,5 @@
 <template>
-  <div class="text-input-groups">
+  <div :class="getRootClass">
     <div class="text-input__label-wrapper">
       <p class="text-input__label">{{ label }}:</p>
       <VTooltip popper-class="btn-tooltip" :triggers="['focus', 'hover', 'click']">
@@ -9,7 +9,12 @@
         <template #popper>{{ popMsg }}</template>
       </VTooltip>
     </div>
-    <BaseNumberTextInput ref="input" :placeholder="placeholder" :value="value" />
+    <BaseNumberTextInput
+      ref="input"
+      :placeholder="placeholder"
+      :value="value"
+      :color-state="colorState"
+    />
   </div>
 </template>
 
@@ -37,6 +42,16 @@ export default {
     },
     value: {
       type: [String, Number]
+    },
+    // focus, short-break, long-break
+    colorState: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    getRootClass() {
+      return `text-input-groups ${this.colorState}`;
     }
   }
 };
@@ -76,7 +91,6 @@ export default {
 
   .text-input__label {
     font-weight: 600;
-    color: map.get(main.$primary, 900);
     @include font-size.responsive((
         xsm: map.get(major-second.$scale, 3)
     ));
@@ -91,8 +105,6 @@ export default {
     border-radius: 50%;
     cursor: pointer;
     outline: none;
-    background-color: lighten(map.get(main.$primary, 900), 5%);
-    border: 2px solid darken(map.get(main.$primary, 900), 5%);
     @include padding.all-sides((
         xsm: 3
     ));
@@ -109,6 +121,47 @@ export default {
 
       path {
         fill: white;
+      }
+    }
+  }
+
+  /* States */
+  &.focus{
+    .text-input__label {
+      color: map.get(main.$primary, 900);
+    }
+    .text-input__info-btn {
+      background-color: lighten(map.get(main.$primary, 500), 5%);
+      border: 2px solid darken(map.get(main.$primary, 500), 5%);
+      &:focus,
+      &:hover {
+        background-color: map.get(main.$primary, 500);
+      }
+    }
+  }
+  &.short-break{
+    .text-input__label {
+      color: map.get(main.$secondary, 900);
+    }
+    .text-input__info-btn {
+      background-color: lighten(map.get(main.$secondary, 600), 5%);
+      border: 2px solid darken(map.get(main.$secondary, 600), 5%);
+      &:focus,
+      &:hover {
+        background-color: map.get(main.$secondary, 600);
+      }
+    }
+  }
+  &.long-break{
+    .text-input__label {
+      color: map.get(main.$tertiary, 800);
+    }
+    .text-input__info-btn {
+      background-color: lighten(map.get(main.$tertiary, 500), 5%);
+      border: 2px solid darken(map.get(main.$tertiary, 500), 5%);
+      &:focus,
+      &:hover {
+        background-color: map.get(main.$tertiary, 500);
       }
     }
   }

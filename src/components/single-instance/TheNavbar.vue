@@ -21,7 +21,11 @@
   </nav>
 
   <Teleport to="body">
-    <TheRoomSettingsModal :show-modal="shouldShowModal" @onModalClose="onModalClose" />
+    <TheRoomSettingsModal
+      :show-modal="shouldShowModal"
+      :color-state="colorState"
+      @onModalClose="onModalClose"
+    />
   </Teleport>
 </template>
 <script>

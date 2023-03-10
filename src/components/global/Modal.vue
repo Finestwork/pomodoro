@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" ref="root">
+  <div :class="getRootClass" ref="root">
     <span class="modal__bg" ref="bg"></span>
     <div class="modal__outer-container">
       <div class="modal__container" ref="container">
@@ -16,6 +16,16 @@ export default {
     showModal: {
       type: Boolean,
       required: true
+    },
+    // focus, short-break, long-break
+    colorState: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    getRootClass() {
+      return `modal ${this.colorState}`;
     }
   },
   watch: {
@@ -95,7 +105,6 @@ export default {
     top: 0;
     left: 0;
     opacity: 0;
-    background-color: map.get(main.$primary, 900);
   }
 
   &__outer-container{
@@ -112,6 +121,24 @@ export default {
   &__container {
     background-color: white;
     border-radius: 15px;
+  }
+
+
+  /* States */
+  &.focus{
+    .modal__bg{
+      background-color: map.get(main.$primary, 900);
+    }
+  }
+  &.short-break{
+    .modal__bg{
+      background-color: map.get(main.$secondary, 900);
+    }
+  }
+  &.long-break{
+    .modal__bg{
+      background-color: map.get(main.$tertiary, 900);
+    }
   }
 }
 </style>
