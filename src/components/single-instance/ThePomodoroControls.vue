@@ -163,5 +163,25 @@ export default {
         nextIcon: map.get(main.$primary, 600),
     ));
   }
+  &.short-break {
+    @include change-state((
+        play: map.get(main.$secondary, 300),
+        playIcon: map.get(main.$secondary, 900),
+        hoverPlay: darken(map.get(main.$secondary, 300), 5%),
+        next: darken(map.get(main.$secondary, 100), 3%),
+        hoverNext: darken(map.get(main.$secondary, 100), 6%),
+        nextIcon: map.get(main.$secondary, 600),
+    ));
+  }
+  &.long-break {
+    @include change-state((
+        play: map.get(main.$tertiary, 300),
+        playIcon: map.get(main.$tertiary, 800),
+        hoverPlay: darken(map.get(main.$tertiary, 300), 5%),
+        next: darken(map.get(main.$tertiary, 200), 3%),
+        hoverNext: darken(map.get(main.$tertiary, 200), 6%),
+        nextIcon: map.get(main.$tertiary, 600),
+    ));
+  }
 }
 </style>

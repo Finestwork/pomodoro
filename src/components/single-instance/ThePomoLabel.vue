@@ -32,7 +32,7 @@ import anime from 'animejs';
 
 export default {
   props: {
-    // focus, short break, long break
+    // focus, short-break, long-break
     colorState: {
       type: String,
       required: true
@@ -95,10 +95,10 @@ export default {
       return this.colorState === 'focus';
     },
     shouldDisplayShortBreak() {
-      return this.colorState === 'short break';
+      return this.colorState === 'short-break';
     },
     shouldDisplayLongBreak() {
-      return this.colorState === 'long break';
+      return this.colorState === 'long-break';
     }
   }
 };

@@ -45,7 +45,7 @@ export default {
       timerText: useRoomSettingsStore().timerText,
       currentDuration: 0,
       timerIntervalId: null,
-      nextState: 'short break'
+      nextState: 'short-break'
     };
   },
   mounted() {
@@ -102,7 +102,7 @@ export default {
       }
 
       if (this.roomSettingsStore.isNextSessionLongBreak) {
-        this.currentColorState = 'long break';
+        this.currentColorState = 'long-break';
         this.nextState = 'pomodoro';
         this.currentDuration = this.roomSettingsStore.longBreakLength * 60;
         this.roomSettingsStore.resetPomodoroLeft();
@@ -114,7 +114,7 @@ export default {
         case 'short break':
           this.currentDuration = this.roomSettingsStore.shortBreakLength * 60;
           this.nextState = 'pomodoro';
-          this.currentColorState = 'short break';
+          this.currentColorState = 'short-break';
           break;
         case 'pomodoro':
           this.currentDuration = this.roomSettingsStore.pomodoroDuration * 60;

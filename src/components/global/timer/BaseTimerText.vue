@@ -13,7 +13,7 @@ export default {
       type: Boolean,
       required: true
     },
-    // focus, short break, long break
+    // focus, short-break, long-break
     colorState: {
       type: String,
       required: true
@@ -75,6 +75,7 @@ export default {
 .timer--text {
   .timer {
     &__text {
+      transition: color .15s ease-in-out;
       font-feature-settings: "kern";
       font-variation-settings: "wght" 400, "wdth" 110, "opsz" 14;
       @include font-size.responsive((
@@ -87,6 +88,12 @@ export default {
 
   &.focus {
     color: darken(map.get(main.$primary, 900), 3%);
+  }
+  &.short-break {
+    color: darken(map.get(main.$secondary, 900), 3%);
+  }
+  &.long-break {
+    color: darken(map.get(main.$tertiary, 900), 3%);
   }
 }
 </style>
