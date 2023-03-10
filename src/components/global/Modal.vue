@@ -28,6 +28,7 @@ export default {
       return `modal ${this.colorState}`;
     }
   },
+  emits: ['modalShown', 'modalHidden'],
   watch: {
     showModal: {
       handler(showModal) {
@@ -57,7 +58,8 @@ export default {
             duration: 350,
             easing: 'easeOutQuint',
             scale: 1,
-            opacity: 1
+            opacity: 1,
+            complete: () => this.$emit('modalShown')
           });
         } else {
           anime({
@@ -75,6 +77,7 @@ export default {
             opacity: 0,
             complete: () => {
               if (this.$refs.root) this.$refs.root.style.display = null;
+              this.$emit('modalHidden');
             }
           });
         }

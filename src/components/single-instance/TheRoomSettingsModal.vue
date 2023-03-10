@@ -1,5 +1,5 @@
 <template>
-  <Modal :show-modal="showModal" :color-state="colorState">
+  <Modal :show-modal="showModal" :color-state="colorState" ref="modal" @modalShown="modalShown">
     <BaseSingleLineAlert
       class="modal__success-alert"
       color-scheme="success"
@@ -104,6 +104,10 @@ export default {
   data() {
     const roomSettingsStore = useRoomSettingsStore();
     return {
+      focusableElements: 'button, input',
+      focusableContents: null,
+      firstFocusableElement: null,
+      lastFocusableElement: null,
       roomSettingsStore: useRoomSettingsStore(),
       pomodoroDuration: roomSettingsStore.pomodoroDuration,
       pomodoros: roomSettingsStore.pomodoros,
@@ -113,6 +117,20 @@ export default {
       shouldShowSuccessAlert: false,
       shouldShowDangerAlert: false
     };
+  },
+  mounted() {
+    this.focusableContents = Array.from(
+      this.$refs.modal.$el.querySelectorAll(this.focusableElements)
+    ).filter((el) => {
+      return el.getAttribute('tabIndex') !== -1;
+    });
+    this.firstFocusableElement = this.focusableContents[0];
+    this.lastFocusableElement = this.focusableContents[this.focusableContents.length - 1];
+
+    document.addEventListener('keydown', this.tabTrapping);
+  },
+  unmounted() {
+    document.removeEventListener('keydown', this.tabTrapping);
   },
   updated() {
     this.pomodoroDuration = this.roomSettingsStore.pomodoroDuration;
@@ -165,6 +183,27 @@ export default {
       this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
       this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
       this.$emit('onModalClose');
+    },
+    tabTrapping(e) {
+      if (e.key.toLowerCase() !== 'tab') return;
+
+      // If tab goes back
+      if (e.shiftKey) {
+        // If user keeps going back and hit the first focusable element
+        if (document.activeElement === this.firstFocusableElement) {
+          this.lastFocusableElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === this.lastFocusableElement) {
+          this.firstFocusableElement.focus();
+          e.preventDefault();
+        }
+      }
+    },
+    modalShown() {
+      this.firstFocusableElement.focus();
+      this.firstFocusableElement.blur();
     }
   }
 };
