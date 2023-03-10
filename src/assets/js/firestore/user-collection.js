@@ -36,11 +36,14 @@ export default class UserCollection {
     const USER_ID = getAuth().currentUser.uid;
     const COLLECTION = collection(getFirestore(), 'Users');
     const QUERY = query(COLLECTION, where('userId', '==', USER_ID));
-
     return new Promise((resolve, reject) => {
       getDocs(QUERY)
         .then((res) => resolve(res))
         .then((err) => reject(err));
     });
+  }
+
+  static get currentUser() {
+    return getAuth().currentUser;
   }
 }

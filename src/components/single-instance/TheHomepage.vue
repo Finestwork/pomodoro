@@ -13,6 +13,7 @@
         <ThePomodoroControls
           class="homepage__pomo-controls"
           :current-color-state="currentColorState"
+          :is-playing="isPlaying"
           @onTogglePlay="togglePlay"
           @nextSession="nextSession"
         />
@@ -50,15 +51,21 @@ export default {
     UserCollection.getDocument()
       .then((res) => {
         const DOC = doc(getFirestore(), 'Users', res.docs[0].id);
-        this.unsubscribe = onSnapshot(DOC, (docs) => {
+        onSnapshot(DOC, (docs) => {
           const { pomodoroDuration, pomodoros, longBreak, shortBreak } = docs.data().roomSettings;
           this.roomSettingsStore.changePomodoroDuration(pomodoroDuration);
           this.roomSettingsStore.changeNumberOfPomodoro(pomodoros);
           this.roomSettingsStore.changeShortBreakLength(shortBreak);
           this.roomSettingsStore.changeLongBreakLength(longBreak);
           this.timerText = useRoomSettingsStore().timerText;
+
+          // Everytime the settings is updated, this will reset the pomodoro sessions
+          clearInterval(this.timerIntervalId);
+          this.isPlaying = false;
           this.currentDuration = pomodoroDuration * 60; // Convert minutes to seconds
+          this.timerText = TimerHelper.formatString(this.currentDuration);
           this.nextState = 'short break';
+          this.roomSettingsStore.resetPomodoroLeft();
           this.roomSettingsStore.decrementPomodoroLeft();
         });
       })

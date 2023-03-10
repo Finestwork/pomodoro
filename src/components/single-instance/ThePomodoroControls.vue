@@ -38,23 +38,19 @@ export default {
     currentColorState: {
       type: String,
       required: true
+    },
+    isPlaying: {
+      type: Boolean,
+      required: true
     }
-  },
-  data() {
-    return {
-      isPlaying: false
-    };
   },
   emits: ['onTogglePlay', 'nextSession'],
   methods: {
     togglePlay(e) {
-      this.isPlaying = !this.isPlaying;
       AnimationHelper.bounce(e.currentTarget);
-
-      this.$emit('onTogglePlay', this.isPlaying);
+      this.$emit('onTogglePlay');
     },
     nextSession(e) {
-      this.isPlaying = false;
       AnimationHelper.bounce(e.currentTarget);
       this.$emit('nextSession');
     }
