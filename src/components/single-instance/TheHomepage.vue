@@ -1,7 +1,7 @@
 <template>
-  <div class="homepage">
+  <div :class="getRootClass">
     <div class="homepage__container">
-      <TheNavbar />
+      <TheNavbar :color-state="currentColorState" />
 
       <div class="homepage__timer-wrapper">
         <ThePomoLabel class="homepage__pomo-label" :color-state="currentColorState" />
@@ -126,6 +126,20 @@ export default {
 
       this.timerText = TimerHelper.formatString(this.currentDuration);
     }
+  },
+  computed: {
+    getRootClass() {
+      return `homepage ${this.currentColorState}`;
+    }
+  },
+  watch: {
+    currentColorState: {
+      handler(colorState, prevColorState) {
+        document.body.classList.remove(prevColorState);
+        document.body.classList.add(colorState);
+      },
+      immediate: true
+    }
   }
 };
 </script>
@@ -138,7 +152,16 @@ export default {
 
 // prettier-ignore
 .homepage {
-  background-color: lighten(map.get(main.$primary, 50), 2%);
+  &.focus{
+    background-color: lighten(map.get(main.$primary, 50), 2%);
+  }
+  &.short-break{
+    background-color: lighten(map.get(main.$secondary, 50), 2%);
+  }
+  &.long-break{
+    background-color: lighten(map.get(main.$tertiary, 50), 2%);
+  }
+
 
   &__container {
     width: 90%;

@@ -1,20 +1,20 @@
 <template>
-  <nav class="nav">
-    <TheLogo />
+  <nav :class="getRootClass">
+    <TheLogo :color-state="colorState" />
     <div class="nav__items">
-      <BaseButtonIcon tooltip="Room Settings" @click="showRoomSettings">
+      <BaseButtonIcon tooltip="Room Settings" :color-state="colorState" @click="showRoomSettings">
         <GearIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="Share Link">
+      <BaseButtonIcon tooltip="Share Link" :color-state="colorState">
         <LinkIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="Report">
+      <BaseButtonIcon tooltip="Report" :color-state="colorState">
         <ChartColumnIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="User">
+      <BaseButtonIcon tooltip="User" :color-state="colorState">
         <UserIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="Logout" @click="logoutUser">
+      <BaseButtonIcon tooltip="Logout" :color-state="colorState" @click="logoutUser">
         <ArrowLeftFromLineIcon />
       </BaseButtonIcon>
     </div>
@@ -48,6 +48,13 @@ export default {
     GearIcon,
     TheRoomSettingsModal
   },
+  props: {
+    // focus, short-break, long-break
+    colorState: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       shouldShowModal: false
@@ -64,6 +71,11 @@ export default {
       e.currentTarget.blur();
       this.shouldShowModal = true;
     }
+  },
+  computed: {
+    getRootClass() {
+      return `nav ${this.colorState}`;
+    }
   }
 };
 </script>
@@ -77,11 +89,20 @@ export default {
 
 // prettier-ignore
 .nav {
+  &.focus{
+    border-bottom: 2px dashed map.get(main.$primary, 600)
+  }
+  &.short-break{
+    border-bottom: 2px dashed map.get(main.$secondary, 600)
+  }
+  &.long-break{
+    border-bottom: 2px dashed map.get(main.$tertiary, 600)
+  }
+
   @include all-properties.init((
       xsm: (
           display: flex,
           flex-direction: column,
-          border-bottom: 2px dashed map.get(main.$primary, 600)
       ),
       380: (
           flex-direction: row,

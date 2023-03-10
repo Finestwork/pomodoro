@@ -1,6 +1,6 @@
 <template>
   <VTooltip :popper-class="'btn-tooltip'">
-    <button class="btn-icon" type="button">
+    <button :class="getRootClass" type="button">
       <slot></slot>
     </button>
 
@@ -14,6 +14,16 @@ export default {
     tooltip: {
       type: String,
       default: ''
+    },
+    // focus, short-break, long-break
+    colorState: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    getRootClass() {
+      return `btn-icon ${this.colorState}`;
     }
   }
 };
@@ -36,7 +46,6 @@ export default {
   border: none;
   cursor: pointer;
   transition: box-shadow-transition.$transition-linear;
-  background-color: map.get(main.$primary, 100);
   @include padding.all-sides((
     xsm: 9.5
   ));
@@ -48,9 +57,10 @@ export default {
   }
   &:focus,
   &:hover{
-    background-color: map.get(main.$primary, 500);
     :deep(svg){
-      fill: white;
+      path{
+        fill: white;
+      }
     }
   }
 
@@ -63,6 +73,37 @@ export default {
     width: 100%;
     height: 100%;
     fill: map.get(main.$primary, 500);
+  }
+
+  /* States */
+  &.focus{
+    background-color: map.get(main.$primary, 100);
+    &:hover{
+      background-color: map.get(main.$primary, 500);
+    }
+    :deep(svg) {
+      fill: map.get(main.$primary, 500);
+    }
+  }
+
+  &.short-break{
+    background-color: map.get(main.$secondary, 100);
+    &:hover{
+      background-color: map.get(main.$secondary, 500);
+    }
+    :deep(svg) {
+      fill: map.get(main.$secondary, 500);
+    }
+  }
+
+  &.long-break{
+    background-color: map.get(main.$tertiary, 100);
+    &:hover{
+      background-color: map.get(main.$tertiary, 500);
+    }
+    :deep(svg) {
+      fill: map.get(main.$tertiary, 500);
+    }
   }
 }
 </style>

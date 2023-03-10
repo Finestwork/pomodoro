@@ -40,15 +40,6 @@ main {
   max-width: 250px;
   line-height: 1.5;
 
-  .v-popper__inner {
-    background: map.get(main.$primary, 500);
-  }
-
-  .v-popper__arrow-outer,
-  .v-popper__arrow-inner {
-    border-color: map.get(main.$primary, 500);
-  }
-
   &.v-popper__popper--show-from {
     .v-popper__wrapper {
       transform: translateY(4px);
@@ -59,6 +50,43 @@ main {
     .v-popper__wrapper {
       transform: none;
       transition: transform 0.15s ease;
+    }
+  }
+}
+
+.focus {
+  .btn-tooltip.v-popper--theme-tooltip {
+    .v-popper__inner {
+      background: map.get(main.$primary, 500);
+    }
+
+    .v-popper__arrow-outer,
+    .v-popper__arrow-inner {
+      border-color: map.get(main.$primary, 500);
+    }
+  }
+}
+.short-break {
+  .btn-tooltip.v-popper--theme-tooltip {
+    .v-popper__inner {
+      background: map.get(main.$secondary, 500);
+    }
+
+    .v-popper__arrow-outer,
+    .v-popper__arrow-inner {
+      border-color: map.get(main.$secondary, 500);
+    }
+  }
+}
+.long-break {
+  .btn-tooltip.v-popper--theme-tooltip {
+    .v-popper__inner {
+      background: map.get(main.$tertiary, 500);
+    }
+
+    .v-popper__arrow-outer,
+    .v-popper__arrow-inner {
+      border-color: map.get(main.$tertiary, 500);
     }
   }
 }
