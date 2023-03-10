@@ -14,6 +14,7 @@
           class="homepage__pomo-controls"
           :current-color-state="currentColorState"
           @onTogglePlay="togglePlay"
+          @nextSession="nextSession"
         />
       </div>
     </div>
@@ -30,6 +31,7 @@ import UserCollection from '@/assets/js/firestore/user-collection';
 
 // NPM
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
+import TimerHelper from '@/assets/js/helpers/timer-helper';
 
 export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
@@ -40,10 +42,10 @@ export default {
       roomSettingsStore: useRoomSettingsStore(),
       timerText: useRoomSettingsStore().timerText,
       currentDuration: 0,
-      timerIntervalId: null
+      timerIntervalId: null,
+      nextState: 'short break'
     };
   },
-  updated() {},
   mounted() {
     UserCollection.getDocument()
       .then((res) => {
@@ -56,6 +58,8 @@ export default {
           this.roomSettingsStore.changeLongBreakLength(longBreak);
           this.timerText = useRoomSettingsStore().timerText;
           this.currentDuration = pomodoroDuration * 60; // Convert minutes to seconds
+          this.nextState = 'short break';
+          this.roomSettingsStore.decrementPomodoroLeft();
         });
       })
       .catch(() => {
@@ -73,12 +77,7 @@ export default {
 
       this.timerIntervalId = setInterval(() => {
         this.currentDuration--;
-        const MINUTES = Math.floor(this.currentDuration / 60);
-        const SECONDS = this.currentDuration % 60;
-        this.timerText = `${MINUTES.toString().padStart(2, '0')}:${SECONDS.toString().padStart(
-          2,
-          '0'
-        )}`;
+        this.timerText = TimerHelper.formatString(this.currentDuration);
 
         if (this.currentDuration === 0) {
           clearInterval(this.timerIntervalId);
@@ -86,6 +85,34 @@ export default {
           this.isPlaying = false;
         }
       }, 1000);
+    },
+    nextSession() {
+      if (this.isPlaying) {
+        this.isPlaying = false;
+        clearInterval(this.timerIntervalId);
+      }
+
+      if (this.roomSettingsStore.isNextSessionLongBreak) {
+        this.nextState = 'pomodoro';
+        this.currentDuration = this.roomSettingsStore.longBreakLength * 60;
+        this.roomSettingsStore.resetPomodoroLeft();
+        this.timerText = TimerHelper.formatString(this.currentDuration);
+        return;
+      }
+
+      switch (this.nextState) {
+        case 'short break':
+          this.currentDuration = this.roomSettingsStore.shortBreakLength * 60;
+          this.nextState = 'pomodoro';
+          break;
+        case 'pomodoro':
+          this.currentDuration = this.roomSettingsStore.pomodoroDuration * 60;
+          this.nextState = 'short break';
+          this.roomSettingsStore.decrementPomodoroLeft();
+          break;
+      }
+
+      this.timerText = TimerHelper.formatString(this.currentDuration);
     }
   }
 };
@@ -98,7 +125,7 @@ export default {
 @use '../../assets/scss/2-tools/mixins/css-properties/padding';
 
 // prettier-ignore
-.homepage{
+.homepage {
   background-color: lighten(map.get(main.$primary, 50), 2%);
 
   &__container {
@@ -118,7 +145,7 @@ export default {
     }
   }
 
-  &__timer-wrapper{
+  &__timer-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -126,20 +153,20 @@ export default {
     min-height: 100vh;
     position: relative;
     @include padding.bottom((
-      xsm: 50
+        xsm: 50
     ));
   }
 
-  &__pomo-label{
+  &__pomo-label {
     @include margin.top((
-      lg: 100
+        lg: 100
     ));
     @include margin.bottom((
         xsm: 25
     ));
   }
 
-  &__pomo-controls{
+  &__pomo-controls {
     @include margin.top((
         xsm: 15
     ));

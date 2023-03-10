@@ -2,18 +2,26 @@ import { defineStore } from 'pinia';
 
 const useRoomSettingsStore = defineStore('roomSettingsStore', {
   state: () => ({
+    pomodorosLeft: 4,
     pomodoros: 4,
     pomodoroDuration: 25, // in minutes
     shortBreakLength: 5, // in minutes
     longBreakLength: 15 // in minutes
   }),
   getters: {
+    notYetStarted() {
+      return this.pomodoros === this.pomodorosLeft;
+    },
+    isNextSessionLongBreak() {
+      return this.pomodorosLeft === 0;
+    },
     timerText() {
       return `${this.pomodoroDuration.toString().padStart(2, '0')}:00`;
     }
   },
   actions: {
     changeNumberOfPomodoro(pomodoros) {
+      this.pomodorosLeft = pomodoros;
       this.pomodoros = pomodoros;
     },
     changePomodoroDuration(duration) {
@@ -24,6 +32,12 @@ const useRoomSettingsStore = defineStore('roomSettingsStore', {
     },
     changeLongBreakLength(newLength) {
       this.longBreakLength = newLength;
+    },
+    decrementPomodoroLeft() {
+      this.pomodorosLeft--;
+    },
+    resetPomodoroLeft() {
+      this.pomodorosLeft = this.pomodoros;
     }
   }
 });
