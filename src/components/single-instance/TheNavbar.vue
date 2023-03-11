@@ -11,7 +11,11 @@
       <BaseButtonIcon tooltip="Report" :color-state="colorState">
         <ChartColumnIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="User" :color-state="colorState">
+      <BaseButtonIcon
+        tooltip="Profile Settings"
+        :color-state="colorState"
+        @click="showProfileSettings"
+      >
         <UserIcon />
       </BaseButtonIcon>
       <BaseButtonIcon tooltip="Logout" :color-state="colorState" @click="logoutUser">
@@ -22,9 +26,14 @@
 
   <Teleport to="body">
     <TheRoomSettingsModal
-      :show-modal="shouldShowModal"
+      :show-modal="shouldShowRoomSettings"
       :color-state="colorState"
-      @onModalClose="onModalClose"
+      @onModalClose="onRoomSettingsClose"
+    />
+    <TheProfileSettings
+      :show-modal="shouldShowProfileSettings"
+      :color-state="colorState"
+      @onModalClose="onProfileSettingsClose"
     />
   </Teleport>
 </template>
@@ -37,6 +46,7 @@ import LinkIcon from '@/components/icons/Link.vue';
 import GearIcon from '@/components/icons/Gear.vue';
 import TheLogo from '@/components/single-instance/TheLogo.vue';
 import TheRoomSettingsModal from '@/components/single-instance/TheRoomSettingsModal.vue';
+import TheProfileSettings from '@/components/single-instance/TheProfileSettings.vue';
 
 // NPM
 import { getAuth } from 'firebase/auth';
@@ -50,7 +60,8 @@ export default {
     ChartColumnIcon,
     LinkIcon,
     GearIcon,
-    TheRoomSettingsModal
+    TheRoomSettingsModal,
+    TheProfileSettings
   },
   props: {
     // focus, short-break, long-break
@@ -61,19 +72,25 @@ export default {
   },
   data() {
     return {
-      shouldShowModal: false
+      shouldShowProfileSettings: false,
+      shouldShowRoomSettings: false
     };
   },
   methods: {
     logoutUser() {
       getAuth().signOut();
     },
-    onModalClose() {
-      this.shouldShowModal = false;
+    onRoomSettingsClose() {
+      this.shouldShowRoomSettings = false;
     },
-    showRoomSettings(e) {
-      e.currentTarget.blur();
-      this.shouldShowModal = true;
+    showRoomSettings() {
+      this.shouldShowRoomSettings = true;
+    },
+    showProfileSettings() {
+      this.shouldShowProfileSettings = true;
+    },
+    onProfileSettingsClose() {
+      this.shouldShowProfileSettings = false;
     }
   },
   computed: {
@@ -93,13 +110,15 @@ export default {
 
 // prettier-ignore
 .nav {
-  &.focus{
+  &.focus {
     border-bottom: 2px dashed map.get(main.$primary, 600)
   }
-  &.short-break{
+
+  &.short-break {
     border-bottom: 2px dashed map.get(main.$secondary, 600)
   }
-  &.long-break{
+
+  &.long-break {
     border-bottom: 2px dashed map.get(main.$tertiary, 600)
   }
 

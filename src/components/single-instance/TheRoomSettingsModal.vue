@@ -1,5 +1,5 @@
 <template>
-  <Modal :show-modal="showModal" :color-state="colorState" ref="modal" @modalShown="modalShown">
+  <Modal :show-modal="showModal" :color-state="colorState" ref="modal" @onModalClose="closeModal">
     <BaseSingleLineAlert
       class="modal__success-alert"
       color-scheme="success"
@@ -14,12 +14,7 @@
     >
       Uh-oh! Unable to update your pomodoro settings but don't worry you can try again later.
     </BaseSingleLineAlert>
-    <div class="modal__header">
-      <h2 class="modal__title">Settings</h2>
-      <button class="modal__close-btn" type="button" @click="closeModal">
-        <XMarkIcon />
-      </button>
-    </div>
+
     <div class="modal__form-group-wrapper">
       <BaseNumericUpDownInput
         ref="pomodoroDuration"
@@ -75,7 +70,6 @@
 
 <script>
 import Modal from '@/components/global/Modal.vue';
-import XMarkIcon from '@/components/icons/XMark.vue';
 import BaseNumericUpDownInput from '@/components/global/forms/BaseNumericUpDownInput.vue';
 import BaseButtonPlayful from '@/components/global/buttons/BaseButtonPlayful.vue';
 import BaseSingleLineAlert from '@/components/global/alerts/BaseSingleLineAlert.vue';
@@ -85,7 +79,6 @@ import UserCollection from '@/assets/js/firestore/user-collection';
 export default {
   components: {
     Modal,
-    XMarkIcon,
     BaseNumericUpDownInput,
     BaseButtonPlayful,
     BaseSingleLineAlert
@@ -104,10 +97,6 @@ export default {
   data() {
     const roomSettingsStore = useRoomSettingsStore();
     return {
-      focusableElements: 'button, input',
-      focusableContents: null,
-      firstFocusableElement: null,
-      lastFocusableElement: null,
       roomSettingsStore: useRoomSettingsStore(),
       pomodoroDuration: roomSettingsStore.pomodoroDuration,
       pomodoros: roomSettingsStore.pomodoros,
@@ -117,20 +106,6 @@ export default {
       shouldShowSuccessAlert: false,
       shouldShowDangerAlert: false
     };
-  },
-  mounted() {
-    this.focusableContents = Array.from(
-      this.$refs.modal.$el.querySelectorAll(this.focusableElements)
-    ).filter((el) => {
-      return el.getAttribute('tabIndex') !== -1;
-    });
-    this.firstFocusableElement = this.focusableContents[0];
-    this.lastFocusableElement = this.focusableContents[this.focusableContents.length - 1];
-
-    document.addEventListener('keydown', this.tabTrapping);
-  },
-  unmounted() {
-    document.removeEventListener('keydown', this.tabTrapping);
   },
   updated() {
     this.pomodoroDuration = this.roomSettingsStore.pomodoroDuration;
@@ -183,27 +158,6 @@ export default {
       this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
       this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
       this.$emit('onModalClose');
-    },
-    tabTrapping(e) {
-      if (e.key.toLowerCase() !== 'tab') return;
-
-      // If tab goes back
-      if (e.shiftKey) {
-        // If user keeps going back and hit the first focusable element
-        if (document.activeElement === this.firstFocusableElement) {
-          this.lastFocusableElement.focus();
-          e.preventDefault();
-        }
-      } else {
-        if (document.activeElement === this.lastFocusableElement) {
-          this.firstFocusableElement.focus();
-          e.preventDefault();
-        }
-      }
-    },
-    modalShown() {
-      this.firstFocusableElement.focus();
-      this.firstFocusableElement.blur();
     }
   }
 };
@@ -239,60 +193,6 @@ export default {
     @include margin.bottom((
         xsm: 25
     ));
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  &__title {
-    font-weight: 600;
-    color: map.get(text.$main, 900);
-    @include font-size.responsive((
-        xsm: map.get(major-second.$scale, 6)
-    ));
-  }
-
-  &__close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 20px;
-    width: 20px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: box-shadow-transition.$transition-linear;
-    @include padding.all-sides((
-        xsm: 5
-    ));
-
-    &:focus {
-      outline: none;
-      @include box-shadow-primary.lightness(lighter, md)
-    }
-
-    &:focus,
-    &:hover {
-      background-color: map.get(main.$primary, 100);
-
-      svg path {
-        fill: map.get(main.$primary, 600);
-      }
-    }
-
-    :deep(svg) {
-      display: block;
-      width: 100%;
-      height: 100%;
-
-      path {
-        fill: map.get(text.$main, 900);
-      }
-    }
   }
 
   &__form-group-wrapper {
