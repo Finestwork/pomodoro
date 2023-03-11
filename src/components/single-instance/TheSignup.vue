@@ -56,6 +56,7 @@
       <BasePlayfulButton
         ref="submitBtn"
         class="form__submit"
+        color-state="focus"
         :type="'submit'"
         :is-loading="toggleBtnLoading"
       >

@@ -32,7 +32,12 @@
             <LockIcon />
           </template>
         </BaseTextInput>
-        <BasePlayfulButton class="form__submit" :type="'submit'" :is-loading="toggleBtnLoading">
+        <BasePlayfulButton
+          class="form__submit"
+          color-state="focus"
+          :type="'submit'"
+          :is-loading="toggleBtnLoading"
+        >
           <template #text>Login</template>
         </BasePlayfulButton>
       </form>
