@@ -5,6 +5,7 @@ import router from './router';
 import { initializeApp } from 'firebase/app';
 import FloatingVue from 'floating-vue';
 import 'floating-vue/dist/style.css';
+import 'nprogress/nprogress.css';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCuoGNaLWyct6-U9sNy9pSKJ_2lBaEFQuw',

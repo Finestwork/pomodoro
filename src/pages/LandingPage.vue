@@ -1,8 +1,9 @@
 <template>
   <main>
-    <div class="home" v-if="shouldShowForm">
+    <div ref="home" class="home" v-if="shouldShowForm">
       <div class="home__left">
         <img
+          ref="homeBg"
           class="home__bg"
           src="/images/background/authentication.png"
           alt="Gradient background"
@@ -23,8 +24,15 @@
           @before-leave="onBeforeLeave"
           @leave="onLeave"
         >
-          <Component :is="getRoute" @successfullyRegistered="successfullyRegistered" />
+          <TheSignup
+            ref="signup"
+            @successfullyRegistered="successfullyRegistered"
+            v-if="canDisplaySignupComponent"
+          />
+          <TheLogin ref="login" v-else-if="canDisplayLoginComponent" />
         </Transition>
+
+        <span class="home__form-loader" ref="formLoader" v-if="shouldDisplayLoader"></span>
       </div>
     </div>
 
@@ -34,35 +42,31 @@
 </template>
 
 <script>
-import TheLogin from '@/components/single-instance/TheLogin.vue';
-import TheSignup from '@/components/single-instance/TheSignup.vue';
-import TheHomepage from '@/components/single-instance/TheHomepage.vue';
-
 // NPM
+import { defineAsyncComponent } from 'vue';
 import anime from 'animejs';
 import { getAuth } from 'firebase/auth';
+import Nprogress from 'nprogress';
 
-const routes = {
-  '/login': TheLogin,
-  '/signup': TheSignup
-};
 export default {
   components: {
-    TheHomepage
+    TheLogin: defineAsyncComponent(() => import('@/components/single-instance/TheLogin.vue')),
+    TheSignup: defineAsyncComponent(() => import('@/components/single-instance/TheSignup.vue')),
+    TheHomepage: defineAsyncComponent(() => import('@/components/single-instance/TheHomepage.vue'))
   },
   data() {
     return {
-      beforeEnterLeft: 0,
-      beforeEnterTop: 0,
-      beforeEnterWidth: 0,
-      beforeEnterHeight: 0,
       shouldShowForm: false,
       shouldShowHomePage: false,
-      unsubscribeAuth: null
+      unsubscribeAuth: null,
+      animatedOnInitialLoad: false,
+      shouldDisplayLoader: false
     };
   },
   mounted() {
     this.checkCurrentlyLoggedInUser();
+    Nprogress.configure({ showSpinner: false });
+    Nprogress.start();
   },
   methods: {
     onBeforeLeave(el) {
@@ -79,22 +83,48 @@ export default {
     },
 
     onLeave(el, done) {
-      anime({
-        targets: el,
-        left: '-100%',
-        duration: 450,
-        easing: 'easeOutExpo',
-        complete: done
+      const animateComponent = () =>
+        anime({
+          targets: el,
+          left: '-100%',
+          duration: 450,
+          easing: 'easeOutExpo',
+          complete: done
+        });
+
+      this.$nextTick(() => {
+        // Async component is not yet downloaded, once components are loaded but delete from DOM, they will become null
+        if (this.$refs.signup === undefined || this.$refs.login === undefined) {
+          this.shouldDisplayLoader = true;
+          const inter = setInterval(() => {
+            if (this.$refs.signup === undefined || this.$refs.login === undefined) return;
+            clearInterval(inter);
+            animateComponent(); // Start the exit animation of the current displayed component
+          });
+          return;
+        }
+
+        // Element is loaded, no need to wait
+        animateComponent();
       });
     },
 
     onBeforeEnter(el) {
+      if (!this.animatedOnInitialLoad) {
+        return;
+      }
+
       Object.assign(el.style, {
         opacity: 0
       });
     },
 
     onEnter(el, done) {
+      if (!this.animatedOnInitialLoad) {
+        this.animatedOnInitialLoad = true;
+        return;
+      }
+
       const { height, width, top } = el.getBoundingClientRect();
       const left = el.offsetLeft;
 
@@ -115,6 +145,7 @@ export default {
         complete: () => {
           done();
           el.style = null;
+          this.shouldDisplayLoader = false;
         }
       });
     },
@@ -125,12 +156,25 @@ export default {
           this.shouldShowForm = true;
           this.shouldShowHomePage = false;
           if (this.$route.path === '/') this.$router.push({ name: 'Login' });
+
+          this.$nextTick(() => {
+            this.$refs.home.classList.add('home--screen-hidden');
+            const int = setInterval(() => {
+              if (this.$refs.signup !== undefined || this.$refs.login !== undefined) {
+                clearInterval(int);
+                this.$refs.home.classList.remove('home--screen-hidden');
+                Nprogress.done(true);
+              }
+            });
+          });
           return;
         }
 
         this.shouldShowForm = false;
         this.shouldShowHomePage = true;
         this.$router.push({ name: 'LandingPage' });
+
+        this.$nextTick(() => Nprogress.done(true));
       });
     },
 
@@ -143,9 +187,32 @@ export default {
     this.unsubscribeAuth();
   },
   computed: {
-    getRoute() {
+    canDisplayLoginComponent() {
       const PATH_NAME = this.$route.path;
-      return routes[PATH_NAME];
+      return PATH_NAME === '/login';
+    },
+    canDisplaySignupComponent() {
+      const PATH_NAME = this.$route.path;
+      return PATH_NAME === '/signup';
+    }
+  },
+  watch: {
+    shouldDisplayLoader(shouldDisplayLoader) {
+      if (shouldDisplayLoader) {
+        this.$nextTick(() => {
+          Object.assign(this.$refs.formLoader.style, {
+            opacity: 0.7
+          });
+          anime({
+            targets: this.$refs.formLoader,
+            opacity: 0.5,
+            easing: 'linear',
+            direction: 'alternate',
+            duration: 350,
+            loop: true
+          });
+        });
+      }
     }
   }
 };
@@ -167,9 +234,26 @@ export default {
   min-height: 100vh;
   overflow: hidden;
 
+  &--screen-hidden{
+    position: fixed;
+    top: 1000%;
+    left: 1000%;
+  }
+
   &__bg {
     width: 100%;
     pointer-events: none;
+  }
+
+  &__form-loader{
+    display: block;
+    background-color: white;
+    opacity: 0.85;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
   &__slogan {

@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <TheLogo />
+    <TheLogo color-state="focus" />
     <BaseListAlert :lists="errors" :color-scheme="'danger'" v-if="errors.length !== 0" />
 
     <div>

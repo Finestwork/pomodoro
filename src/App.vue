@@ -24,6 +24,12 @@ body {
   overflow-x: hidden;
   width: 100%;
   height: 100vh;
+
+  // To increase specificity
+  #nprogress .bar {
+    box-shadow: rgba(240, 81, 164, 0.2) 0px 0px 3px 3px;
+    background-color: #f50080;
+  }
 }
 
 main {
