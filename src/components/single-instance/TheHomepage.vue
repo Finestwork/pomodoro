@@ -194,6 +194,7 @@ export default {
 
   &__pomo-label {
     @include margin.top((
+        xsm: 50,
         lg: 100
     ));
     @include margin.bottom((
