@@ -61,7 +61,7 @@ import isEmpty from 'validator/es/lib/isEmpty';
 import isEmail from 'validator/es/lib/isEmail';
 
 // NPM
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithCredential, EmailAuthProvider } from 'firebase/auth';
 import GoogleCodeErrors from '@/assets/js/auth/google-code-errors';
 
 export default {
@@ -116,7 +116,9 @@ export default {
         return;
       }
 
-      signInWithEmailAndPassword(getAuth(), this.emailText, this.passwordText)
+      const CREDENTIAL = EmailAuthProvider.credential(this.emailText, this.passwordText);
+
+      signInWithCredential(getAuth(), CREDENTIAL)
         .then(() => {
           this.toggleBtnLoading = false;
         })

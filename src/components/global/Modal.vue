@@ -3,9 +3,9 @@
     <span class="modal__bg" ref="bg"></span>
     <div class="modal__outer-container">
       <div class="modal__container" ref="container">
-        <div class="modal__header">
-          <h2 class="modal__title">Settings</h2>
-          <button class="modal__close-btn" type="button" @click="onModalClose">
+        <div class="modal__header" v-if="canShowHeader">
+          <h2 class="modal__title">{{ headerTitle }}</h2>
+          <button class="modal__close-btn" type="button" @click="onModalClose" v-if="hasCloseBtn">
             <XMarkIcon />
           </button>
         </div>
@@ -32,11 +32,14 @@ export default {
     colorState: {
       type: String,
       required: true
-    }
-  },
-  computed: {
-    getRootClass() {
-      return `modal ${this.colorState}`;
+    },
+    headerTitle: {
+      type: String,
+      default: ''
+    },
+    hasCloseBtn: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -83,6 +86,14 @@ export default {
           e.preventDefault();
         }
       }
+    }
+  },
+  computed: {
+    getRootClass() {
+      return `modal ${this.colorState}`;
+    },
+    canShowHeader() {
+      return this.headerTitle !== '' || this.hasCloseBtn;
     }
   },
   watch: {

@@ -35,7 +35,7 @@ export default {
       type: String,
       default: 'Loading'
     },
-    // focus, short-break, long-break
+    // focus, short-break, long-break, danger
     colorState: {
       type: String,
       required: true
@@ -90,6 +90,7 @@ export default {
 @use 'sass:map';
 @use '../../../assets/scss/1-settings/css-properties/font-size/major-second';
 @use '../../../assets/scss/1-settings/css-properties/colors/main';
+@use '../../../assets/scss/1-settings/css-properties/colors/safety';
 @use '../../../assets/scss/2-tools/functions/convertions/pixels';
 
 .btn--playful {
@@ -212,6 +213,24 @@ export default {
 
     &:disabled {
       background-color: lighten(map.get(main.$tertiary, 500), 10%);
+    }
+  }
+  &.danger {
+    $danger: lighten(map.get(safety.$danger, 500), 5%);
+
+    box-shadow: 0 5px 0 rgba($danger, 0.5);
+    background-color: $danger;
+    &:focus {
+      box-shadow: 0 2px 0 rgba($danger, 0.5);
+    }
+
+    &:focus,
+    &:hover {
+      background-color: darken($danger, 3%);
+    }
+
+    &:disabled {
+      background-color: lighten($danger, 10%);
     }
   }
 }

@@ -1,5 +1,11 @@
 <template>
-  <Modal :show-modal="showModal" :color-state="colorState" ref="modal" @onModalClose="closeModal">
+  <Modal
+    :show-modal="showModal"
+    :color-state="colorState"
+    ref="modal"
+    header-title="Settings"
+    @onModalClose="closeModal"
+  >
     <BaseSingleLineAlert
       class="modal__success-alert"
       color-scheme="success"

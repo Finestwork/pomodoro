@@ -48,7 +48,8 @@ export default {
   components: { XMarkIcon },
   props: {
     modelValue: {
-      type: String
+      type: String,
+      default: ''
     },
     type: {
       type: String,
@@ -69,6 +70,12 @@ export default {
     clearable: {
       type: Boolean,
       default: false
+    },
+    clearErrors: {
+      type: Boolean
+    },
+    clearForm: {
+      type: Boolean
     },
 
     // Programmatically run the validation functions
@@ -234,6 +241,16 @@ export default {
         }
       },
       immediate: true
+    },
+    clearErrors(clearErrors) {
+      if (clearErrors) this.errors = [];
+    },
+    clearForm(clearForm) {
+      if (clearForm) {
+        this.errors = [];
+        this.$refs.input.value = '';
+        this.$emit('update:modelValue', this.$refs.input.value);
+      }
     }
   }
 };
