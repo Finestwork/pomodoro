@@ -1,5 +1,5 @@
 <template>
-  <div class="text-input">
+  <div :class="getRootClass">
     <label :for="id">{{ label }}</label>
     <div :class="inputWrapperClass">
       <input
@@ -76,6 +76,12 @@ export default {
     },
     clearForm: {
       type: Boolean
+    },
+
+    // focus, short-break, long-break,
+    colorState: {
+      type: String,
+      default: 'focus'
     },
 
     // Programmatically run the validation functions
@@ -213,6 +219,9 @@ export default {
     }
   },
   computed: {
+    getRootClass() {
+      return `text-input ${this.colorState}`.trim();
+    },
     inputWrapperClass() {
       let base = 'text-input__wrapper';
 
@@ -266,6 +275,9 @@ export default {
 @use '../../../assets/scss/2-tools/functions/convertions/pixels';
 @use '../../../assets/scss/2-tools/mixins/forms/text-input-fields';
 @use '../../../assets/scss/2-tools/mixins/css-properties/box-shadow/primary' as box-shadow-primary;
+@use '../../../assets/scss/2-tools/mixins/css-properties/box-shadow/secondary' as
+  box-shadow-secondary;
+@use '../../../assets/scss/2-tools/mixins/css-properties/box-shadow/tertiary' as box-shadow-tertiary;
 
 $icon-offset: 12;
 $icon-size: 12;
@@ -392,6 +404,42 @@ $default-padding: 10;
     }
   }
 
+  /* States */
+  &.focus {
+    @include text-input-fields.list {
+      &:focus,
+      &:hover {
+        background-color: map.get(main.$primary, 100);
+      }
+      &:focus {
+        @include box-shadow-primary.lightness(light, 'md');
+      }
+    }
+  }
+  &.short-break {
+    @include text-input-fields.list {
+      &:focus,
+      &:hover {
+        background-color: map.get(main.$secondary, 100);
+      }
+      &:focus {
+        @include box-shadow-secondary.lightness(light, 'md');
+      }
+    }
+  }
+  &.long-break {
+    @include text-input-fields.list {
+      &:focus,
+      &:hover {
+        background-color: map.get(main.$tertiary, 100);
+      }
+      &:focus {
+        @include box-shadow-tertiary.lightness(light, 'md');
+      }
+    }
+  }
+
+  /* Transition */
   .list-move,
   .list-enter-active,
   .list-leave-active {

@@ -24,6 +24,7 @@
         type="text"
         placeholder="Place your username here"
         id="profileSettingsUsernameTxt"
+        :color-state="colorState"
         v-model="currentUsername"
       />
       <BaseTextInput
@@ -34,6 +35,7 @@
         id="profileSettingsEmailTxt"
         :validation-rules="{ isEmail: true }"
         :clear-errors="shouldClearEmailErrors"
+        :color-state="colorState"
         v-model="currentEmail"
       />
       <BaseTextInput
@@ -42,6 +44,7 @@
         type="password"
         placeholder="Change your password here"
         id="profileSettingsPasswordTxt"
+        :color-state="colorState"
         v-model="currentPassword"
       />
     </div>
@@ -69,7 +72,7 @@
       :show-modal="shouldShowAuthenticationModal"
       @onModalClose="authModalClose"
     >
-      <p class="auth-modal__label">Please login again to change your credentials.</p>
+      <p class="auth-modal__label">Please confirm your credentials.</p>
       <BaseTextInput
         class="auth-modal__form-wrapper"
         id="authEmailTxt"
@@ -77,6 +80,7 @@
         placeholder="Place your email here"
         type="email"
         :clear-form="shouldClearAuthEmail"
+        :color-state="colorState"
         v-model="credentialEmail"
       />
       <BaseTextInput
@@ -86,6 +90,7 @@
         placeholder="Place your password here"
         type="password"
         :clear-form="shouldClearAuthPassword"
+        :color-state="colorState"
         v-model="credentialPassword"
       />
       <BaseButtonPlayful
