@@ -169,10 +169,11 @@ export default {
       this.isAuthBtnLoading = false;
       this.credentialEmail = '';
       this.credentialPassword = '';
+      this.reset();
       this.$emit('onModalClose');
     },
-    reset(e) {
-      e.currentTarget.blur();
+    reset(e = null) {
+      if (e !== null) e.currentTarget.blur();
       this.currentUsername = this.oldUsername;
       this.currentEmail = this.oldEmail;
       this.currentPassword = '';
@@ -263,7 +264,6 @@ export default {
       if (this.currentPassword.trim() !== '') {
         updatePassword(currentUser, this.currentPassword)
           .then(() => {
-            this.currentPassword = '';
             this.isSubmitBtnLoading = false;
             this.successAlertText = 'Successfully updated your credentials.';
           })
@@ -288,6 +288,7 @@ export default {
           this.oldEmail = this.currentEmail;
           this.shouldShowAuthenticationModal = false;
 
+          this.currentPassword = '';
           this.credentialEmail = '';
           this.credentialPassword = '';
           this.successAlertText = 'Successfully updated your credentials.';
