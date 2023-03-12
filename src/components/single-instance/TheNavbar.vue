@@ -5,9 +5,6 @@
       <BaseButtonIcon tooltip="Room Settings" :color-state="colorState" @click="showRoomSettings">
         <GearIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="Share Link" :color-state="colorState">
-        <LinkIcon />
-      </BaseButtonIcon>
       <BaseButtonIcon tooltip="Report" :color-state="colorState">
         <ChartColumnIcon />
       </BaseButtonIcon>
@@ -42,7 +39,6 @@ import BaseButtonIcon from '@/components/global/buttons/BaseButtonIcon.vue';
 import UserIcon from '@/components/icons/User.vue';
 import ArrowLeftFromLineIcon from '@/components/icons/ArrowLeftFromLine.vue';
 import ChartColumnIcon from '@/components/icons/ChartColumn.vue';
-import LinkIcon from '@/components/icons/Link.vue';
 import GearIcon from '@/components/icons/Gear.vue';
 import TheLogo from '@/components/single-instance/TheLogo.vue';
 import TheRoomSettingsModal from '@/components/single-instance/TheRoomSettingsModal.vue';
@@ -58,7 +54,6 @@ export default {
     BaseButtonIcon,
     ArrowLeftFromLineIcon,
     ChartColumnIcon,
-    LinkIcon,
     GearIcon,
     TheRoomSettingsModal,
     TheProfileSettings
