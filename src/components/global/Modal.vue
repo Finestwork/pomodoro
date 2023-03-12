@@ -173,28 +173,26 @@ export default {
 .modal {
   display: none;
   position: fixed;
+  width: 100%;
+  height: 100vh;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   z-index: 999;
 
   &__bg {
     width: 100%;
     height: 100vh;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     opacity: 0;
   }
 
   &__outer-container {
-    position: absolute;
-    width: 100%;
     overflow-y: scroll;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    width: 100%;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -203,6 +201,7 @@ export default {
   &__container {
     background-color: white;
     border-radius: 15px;
+    margin: auto;
   }
 
   &__header {

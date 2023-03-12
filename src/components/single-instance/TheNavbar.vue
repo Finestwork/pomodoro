@@ -81,15 +81,19 @@ export default {
       getAuth().signOut();
     },
     onRoomSettingsClose() {
+      document.body.style.overflow = null;
       this.shouldShowRoomSettings = false;
     },
     showRoomSettings() {
+      document.body.style.overflow = 'hidden';
       this.shouldShowRoomSettings = true;
     },
     showProfileSettings() {
+      document.body.style.overflow = 'hidden';
       this.shouldShowProfileSettings = true;
     },
     onProfileSettingsClose() {
+      document.body.style.overflow = null;
       this.shouldShowProfileSettings = false;
     }
   },
