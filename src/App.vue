@@ -26,9 +26,51 @@ body {
   height: 100vh;
 
   // To increase specificity
+  .btn-tooltip.v-popper--theme-tooltip {
+    font-weight: 600;
+    font-size: pixels.toRem(map.get(major-second.$scale, 2));
+    max-width: 250px;
+    line-height: 1.5;
+
+    &.v-popper__popper--show-from {
+      .v-popper__wrapper {
+        transform: translateY(4px);
+      }
+    }
+
+    &.v-popper__popper--show-to {
+      .v-popper__wrapper {
+        transform: none;
+        transition: transform 0.15s ease;
+      }
+    }
+  }
+
   #nprogress .bar {
     box-shadow: rgba(240, 81, 164, 0.2) 0px 0px 3px 3px;
     background-color: #f50080;
+  }
+
+  .Vue-Toastification__toast {
+    min-width: auto;
+    width: 100%;
+    max-width: 500px;
+    align-items: center;
+    min-height: 0;
+    padding: pixels.toRem(15) pixels.toRem(15);
+
+    .Vue-Toastification__icon {
+      margin-right: pixels.toRem(8);
+      width: 16px;
+    }
+    .Vue-Toastification__toast-body {
+      font-weight: 500;
+      font-family: inherit;
+      font-size: pixels.toRem(map.get(major-second.$scale, 4));
+    }
+    .Vue-Toastification__progress-bar {
+      bottom: -1px;
+    }
   }
 }
 
@@ -37,26 +79,6 @@ main {
   flex-direction: column;
   h2 {
     margin-bottom: 1rem;
-  }
-}
-
-.btn-tooltip.v-popper--theme-tooltip {
-  font-weight: 600;
-  font-size: pixels.toRem(map.get(major-second.$scale, 2));
-  max-width: 250px;
-  line-height: 1.5;
-
-  &.v-popper__popper--show-from {
-    .v-popper__wrapper {
-      transform: translateY(4px);
-    }
-  }
-
-  &.v-popper__popper--show-to {
-    .v-popper__wrapper {
-      transform: none;
-      transition: transform 0.15s ease;
-    }
   }
 }
 

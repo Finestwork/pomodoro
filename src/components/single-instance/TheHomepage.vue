@@ -29,11 +29,14 @@ import ThePomoLabel from '@/components/single-instance/ThePomoLabel.vue';
 import BaseTimerText from '@/components/global/timer/BaseTimerText.vue';
 import ThePomodoroControls from '@/components/single-instance/ThePomodoroControls.vue';
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
+import { useStoredPomodoros } from '@/stores/pomodoro';
 import UserCollection from '@/assets/js/firestore/user-collection';
 
 // NPM
+import { useToast } from 'vue-toastification';
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import TimerHelper from '@/assets/js/helpers/timer-helper';
+import PomodoroHelper from '@/assets/js/firestore/pomodoro';
 
 export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
@@ -42,13 +45,31 @@ export default {
       currentColorState: 'focus',
       isPlaying: false,
       roomSettingsStore: useRoomSettingsStore(),
+      storedPomodoros: useStoredPomodoros(),
       timerText: useRoomSettingsStore().timerText,
       currentDuration: 0,
       timerIntervalId: null,
-      nextState: 'short-break'
+      nextState: 'short-break',
+      toastOptions: {
+        position: 'bottom-right',
+        timeout: 5016,
+        closeOnClick: true,
+        pauseOnFocusLoss: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: false,
+        closeButton: 'button',
+        icon: true,
+        rtl: false
+      }
     };
   },
   mounted() {
+    /*
+     TODO: ERROR HANDLING
+     */
     UserCollection.getDocument()
       .then((res) => {
         const DOC = doc(getFirestore(), 'Users', res.docs[0].id);
@@ -70,6 +91,7 @@ export default {
           this.roomSettingsStore.resetPomodoroLeft();
           this.roomSettingsStore.decrementPomodoroLeft();
         });
+        this.getStoredPomodorosFromFirebase();
       })
       .catch(() => {
         // Server error I guess?
@@ -102,6 +124,7 @@ export default {
       }
 
       if (this.roomSettingsStore.isNextSessionLongBreak) {
+        this.savePomodoro();
         this.currentColorState = 'long-break';
         this.nextState = 'pomodoro';
         this.currentDuration = this.roomSettingsStore.longBreakLength * 60;
@@ -112,6 +135,7 @@ export default {
 
       switch (this.nextState) {
         case 'short break':
+          this.savePomodoro();
           this.currentDuration = this.roomSettingsStore.shortBreakLength * 60;
           this.nextState = 'pomodoro';
           this.currentColorState = 'short-break';
@@ -125,6 +149,52 @@ export default {
       }
 
       this.timerText = TimerHelper.formatString(this.currentDuration);
+    },
+    getStoredPomodorosFromFirebase() {
+      PomodoroHelper.getAll()
+        .then((res) => {
+          this.storedPomodoros.storeCloudPomodoros(res.docs);
+        })
+        .catch(() => {
+          useToast().error(
+            'Uh-oh! Unable to fetch your recent pomodoro activity.',
+            this.toastOptions
+          );
+        });
+    },
+    savePomodoro() {
+      if (!this.storedPomodoros.hasPomodoros) {
+        PomodoroHelper.getAll()
+          .then((res) => {
+            this.storedPomodoros.storeCloudPomodoros(res.docs);
+            PomodoroHelper.save()
+              .then(() => {
+                this.storedPomodoros.incrementTodayPomodoro();
+              })
+              .catch(() => {
+                useToast().error(
+                  'Unable to store your latest pomodoro activity.',
+                  this.toastOptions
+                );
+              });
+          })
+          .catch(() => {
+            useToast().error(
+              'Uh-oh! Unable to fetch your recent pomodoro activity.',
+              this.toastOptions
+            );
+          });
+
+        return;
+      }
+
+      PomodoroHelper.save()
+        .then(() => {
+          this.storedPomodoros.incrementTodayPomodoro();
+        })
+        .catch(() => {
+          useToast().error('Unable to store your latest pomodoro activity.', this.toastOptions);
+        });
     }
   },
   computed: {
@@ -152,13 +222,15 @@ export default {
 
 // prettier-ignore
 .homepage {
-  &.focus{
+  &.focus {
     background-color: lighten(map.get(main.$primary, 50), 2%);
   }
-  &.short-break{
+
+  &.short-break {
     background-color: lighten(map.get(main.$secondary, 50), 2%);
   }
-  &.long-break{
+
+  &.long-break {
     background-color: lighten(map.get(main.$tertiary, 50), 2%);
   }
 

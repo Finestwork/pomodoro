@@ -330,6 +330,14 @@ export default {
 
 // prettier-ignore
 .modal {
+  :deep(.modal__container) {
+    width: 95%;
+    max-width: 600px;
+    @include padding.all-sides((
+        xsm: 15
+    ));
+  }
+
   &__form-wrapper {
     @include margin.top((
         xsm: 35

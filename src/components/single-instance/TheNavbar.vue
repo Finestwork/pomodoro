@@ -5,7 +5,7 @@
       <BaseButtonIcon tooltip="Room Settings" :color-state="colorState" @click="showRoomSettings">
         <GearIcon />
       </BaseButtonIcon>
-      <BaseButtonIcon tooltip="Report" :color-state="colorState">
+      <BaseButtonIcon tooltip="Report" :color-state="colorState" @click="showChartProgress">
         <ChartColumnIcon />
       </BaseButtonIcon>
       <BaseButtonIcon
@@ -32,6 +32,11 @@
       :color-state="colorState"
       @onModalClose="onProfileSettingsClose"
     />
+    <TheChartProgress
+      :show-modal="shouldShowChartProgress"
+      :color-state="colorState"
+      @onModalClose="onChartProgressClose"
+    />
   </Teleport>
 </template>
 <script>
@@ -43,6 +48,7 @@ import GearIcon from '@/components/icons/Gear.vue';
 import TheLogo from '@/components/single-instance/TheLogo.vue';
 import TheRoomSettingsModal from '@/components/single-instance/TheRoomSettingsModal.vue';
 import TheProfileSettings from '@/components/single-instance/TheProfileSettings.vue';
+import TheChartProgress from '@/components/single-instance/TheChartProgress.vue';
 
 // NPM
 import { getAuth } from 'firebase/auth';
@@ -56,7 +62,8 @@ export default {
     ChartColumnIcon,
     GearIcon,
     TheRoomSettingsModal,
-    TheProfileSettings
+    TheProfileSettings,
+    TheChartProgress
   },
   props: {
     // focus, short-break, long-break
@@ -68,7 +75,8 @@ export default {
   data() {
     return {
       shouldShowProfileSettings: false,
-      shouldShowRoomSettings: false
+      shouldShowRoomSettings: false,
+      shouldShowChartProgress: false
     };
   },
   methods: {
@@ -90,6 +98,14 @@ export default {
     onProfileSettingsClose() {
       document.body.style.overflow = null;
       this.shouldShowProfileSettings = false;
+    },
+    showChartProgress() {
+      document.body.style.overflow = 'hidden';
+      this.shouldShowChartProgress = true;
+    },
+    onChartProgressClose() {
+      document.body.style.overflow = null;
+      this.shouldShowChartProgress = false;
     }
   },
   computed: {

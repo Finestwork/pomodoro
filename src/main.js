@@ -4,6 +4,8 @@ import App from './App.vue';
 import router from './router';
 import { initializeApp } from 'firebase/app';
 import FloatingVue from 'floating-vue';
+import Toast from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
 import 'floating-vue/dist/style.css';
 import 'nprogress/nprogress.css';
 
@@ -20,4 +22,13 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-createApp(App).use(router).use(createPinia()).use(FloatingVue).mount('body');
+createApp(App)
+  .use(router)
+  .use(createPinia())
+  .use(FloatingVue)
+  .use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 8,
+    newestOnTop: true
+  })
+  .mount('body');

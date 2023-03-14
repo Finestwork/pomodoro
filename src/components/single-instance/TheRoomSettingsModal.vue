@@ -169,7 +169,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @use 'sass:map';
 @use '../../assets/scss/1-settings/css-properties/font-size/major-second';
 @use '../../assets/scss/1-settings/css-properties/colors/main';
@@ -183,7 +183,7 @@ export default {
 
 // prettier-ignore
 .modal {
-  &__container {
+  :deep(.modal__container) {
     width: 95%;
     max-width: 600px;
     @include padding.all-sides((
