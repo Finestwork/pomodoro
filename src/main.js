@@ -1,3 +1,4 @@
+import FIREBASE_CONFIG from '../firebase.config.json';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
@@ -10,14 +11,7 @@ import 'floating-vue/dist/style.css';
 import 'nprogress/nprogress.css';
 
 // Initialize Firebase
-initializeApp({
-  apiKey: 'AIzaSyDDo6-6YDQxMu4ESIdfPNMVag5mMcNT8ac',
-  authDomain: 'pomotasker-app.firebaseapp.com',
-  projectId: 'pomotasker-app',
-  storageBucket: 'pomotasker-app.appspot.com',
-  messagingSenderId: '860162131029',
-  appId: '1:860162131029:web:c14e28504a6abc52c8c0dc'
-});
+initializeApp(FIREBASE_CONFIG);
 
 createApp(App)
   .use(router)

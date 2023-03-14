@@ -7,12 +7,23 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+.github/workflows
 node_modules
 .DS_Store
 dist
 dist-ssr
 coverage
+.vscode
+.idea
 *.local
+
+# firebase
+.firebaserc
+.firebase
+firebase.json
+firebase.rules.json
+firebase.config.json
+
 
 /cypress/videos/
 /cypress/screenshots/
