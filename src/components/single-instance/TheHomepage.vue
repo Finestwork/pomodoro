@@ -89,12 +89,16 @@ export default {
           this.roomSettingsStore.decrementPomodoroLeft();
         });
         this.getStoredPomodorosFromFirebase();
+        this.$emit('homepageReady');
       })
       .catch(() => {
         useToast().error(
           'Unable to get your saved room settings from the database.',
           this.toastOptions
         );
+
+        // Even tho stored settings are not fetched, user can still use the app
+        this.$emit('homepageReady');
       });
   },
   methods: {

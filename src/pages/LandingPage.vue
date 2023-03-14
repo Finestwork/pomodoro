@@ -37,7 +37,7 @@
     </div>
 
     <!-- If logged in -->
-    <TheHomepage v-if="shouldShowHomePage" />
+    <TheHomepage @homepageReady="onHomepageReady" v-if="shouldShowHomePage" />
   </main>
 </template>
 
@@ -173,14 +173,16 @@ export default {
         this.shouldShowForm = false;
         this.shouldShowHomePage = true;
         this.$router.push({ name: 'LandingPage' });
-
-        this.$nextTick(() => Nprogress.done(true));
       });
     },
 
     successfullyRegistered() {
       this.shouldShowForm = false;
       this.shouldShowHomePage = true;
+    },
+
+    onHomepageReady() {
+      this.$nextTick(() => Nprogress.done(true));
     }
   },
   unmounted() {
