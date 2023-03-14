@@ -31,12 +31,14 @@ import ThePomodoroControls from '@/components/single-instance/ThePomodoroControl
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
 import { useStoredPomodoros } from '@/stores/pomodoro';
 import UserCollection from '@/assets/js/firestore/user-collection';
+import TimerHelper from '@/assets/js/helpers/timer-helper';
+import PomodoroHelper from '@/assets/js/firestore/pomodoro';
+import DocumentTitleHelper from '@/assets/js/helpers/document-title-helper';
+import AudioHelper from '@/assets/js/helpers/audio-helper';
 
 // NPM
 import { useToast } from 'vue-toastification';
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
-import TimerHelper from '@/assets/js/helpers/timer-helper';
-import PomodoroHelper from '@/assets/js/firestore/pomodoro';
 
 export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
@@ -67,6 +69,7 @@ export default {
     };
   },
   mounted() {
+    AudioHelper.init();
     UserCollection.getDocument()
       .then((res) => {
         if (res.docs.length === 0) {
@@ -112,53 +115,41 @@ export default {
       this.isPlaying = !this.isPlaying;
 
       if (!this.isPlaying) {
+        AudioHelper.pause();
         clearInterval(this.timerIntervalId);
+        DocumentTitleHelper.changeOnState(this.currentColorState, ' - Paused');
         return;
       }
 
+      AudioHelper.play();
+      DocumentTitleHelper.changeOnState(this.currentColorState, ' - Playing');
       this.timerIntervalId = setInterval(() => {
         this.currentDuration--;
         this.timerText = TimerHelper.formatString(this.currentDuration);
+        DocumentTitleHelper.changeOnState(this.currentColorState, ` - ${this.timerText}`);
 
         if (this.currentDuration === 0) {
+          this.getNextSession();
           clearInterval(this.timerIntervalId);
           this.timerIntervalId = false;
           this.isPlaying = false;
+
+          switch (this.currentColorState) {
+            case 'focus':
+              AudioHelper.focus();
+              break;
+            case 'short-break':
+              AudioHelper.shortBreak();
+              break;
+            case 'long-break':
+              AudioHelper.longBreak();
+          }
         }
       }, 1000);
     },
     nextSession() {
-      if (this.isPlaying) {
-        this.isPlaying = false;
-        clearInterval(this.timerIntervalId);
-      }
-
-      if (this.roomSettingsStore.isNextSessionLongBreak) {
-        this.savePomodoro();
-        this.currentColorState = 'long-break';
-        this.nextState = 'pomodoro';
-        this.currentDuration = this.roomSettingsStore.longBreakLength * 60;
-        this.roomSettingsStore.resetPomodoroLeft();
-        this.timerText = TimerHelper.formatString(this.currentDuration);
-        return;
-      }
-
-      switch (this.nextState) {
-        case 'short break':
-          this.savePomodoro();
-          this.currentDuration = this.roomSettingsStore.shortBreakLength * 60;
-          this.nextState = 'pomodoro';
-          this.currentColorState = 'short-break';
-          break;
-        case 'pomodoro':
-          this.currentDuration = this.roomSettingsStore.pomodoroDuration * 60;
-          this.nextState = 'short break';
-          this.currentColorState = 'focus';
-          this.roomSettingsStore.decrementPomodoroLeft();
-          break;
-      }
-
-      this.timerText = TimerHelper.formatString(this.currentDuration);
+      AudioHelper.pause();
+      this.getNextSession();
     },
     getStoredPomodorosFromFirebase() {
       PomodoroHelper.getAll()
@@ -205,6 +196,49 @@ export default {
         .catch(() => {
           useToast().error('Unable to store your latest pomodoro activity.', this.toastOptions);
         });
+    },
+
+    /*
+     * =================
+     * Helpers
+     * =================
+     */
+
+    getNextSession() {
+      if (this.isPlaying) {
+        this.isPlaying = false;
+        clearInterval(this.timerIntervalId);
+      }
+
+      if (this.roomSettingsStore.isNextSessionLongBreak) {
+        this.savePomodoro();
+        this.currentColorState = 'long-break';
+        this.nextState = 'pomodoro';
+        DocumentTitleHelper.changeOnState(this.currentColorState, ' - Paused');
+        this.currentDuration = this.roomSettingsStore.longBreakLength * 60;
+        this.roomSettingsStore.resetPomodoroLeft();
+        this.timerText = TimerHelper.formatString(this.currentDuration);
+        return;
+      }
+
+      switch (this.nextState) {
+        case 'short break':
+          this.savePomodoro();
+          this.currentDuration = this.roomSettingsStore.shortBreakLength * 60;
+          this.nextState = 'pomodoro';
+          this.currentColorState = 'short-break';
+          DocumentTitleHelper.changeOnState(this.currentColorState, ' - Paused');
+          break;
+        case 'pomodoro':
+          this.currentDuration = this.roomSettingsStore.pomodoroDuration * 60;
+          this.nextState = 'short break';
+          this.currentColorState = 'focus';
+          DocumentTitleHelper.changeOnState(this.currentColorState, ' - Paused');
+          this.roomSettingsStore.decrementPomodoroLeft();
+          break;
+      }
+
+      this.timerText = TimerHelper.formatString(this.currentDuration);
     }
   },
   computed: {
