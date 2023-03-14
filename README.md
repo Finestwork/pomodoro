@@ -15,6 +15,8 @@ To install and run PomoTasker, you will need to have knowledge of how to install
 
 - Run the npm install command to install all the required packages and dependencies for the project.
 
-- Once the installation is complete, use the npm run dev command to start the development server and launch the project in your browser.
+- Before running `npm run dev`, you'll need to create a Firebase project with authentication and Firestore enabled. Firebase will provide an object containing the configuration details you'll need to use in PomoTasker. Rename `firebase.config.example.json` to `firebase.config.json` and paste the configuration details into the appropriate fields.
+
+- After completing all the above steps, you can now use the npm run dev command to start the development server and launch the project in your browser.
 
 - You should now be able to use PomoTasker on your local machine.
