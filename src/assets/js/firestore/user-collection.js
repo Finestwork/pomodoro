@@ -22,6 +22,15 @@ export default class UserCollection {
     return new Promise((resolve, reject) => {
       UserCollection.getDocument()
         .then((res) => {
+          // If there's no existing document
+          if (res.docs.length === 0) {
+            UserCollection.addData({ userId: getAuth().currentUser.uid, ...data })
+              .then((res) => resolve(res))
+              .catch((err) => reject(err));
+            return;
+          }
+
+          // If there's an existing document
           const DOC_REF = doc(getFirestore(), 'Users', res.docs[0].id);
           updateDoc(DOC_REF, data)
             .then((res) => resolve(res))

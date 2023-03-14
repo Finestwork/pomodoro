@@ -69,6 +69,12 @@ export default {
   mounted() {
     UserCollection.getDocument()
       .then((res) => {
+        if (res.docs.length === 0) {
+          this.$emit('homepageReady');
+          return;
+        }
+
+        // If document is not empty
         const DOC = doc(getFirestore(), 'Users', res.docs[0].id);
         onSnapshot(DOC, (docs) => {
           const { pomodoroDuration, pomodoros, longBreak, shortBreak } = docs.data().roomSettings;

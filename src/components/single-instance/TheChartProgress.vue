@@ -12,6 +12,7 @@
     <p class="error" v-if="canDisplayError">
       Unable to fetch your recent activities, you may try again later.
     </p>
+    <p class="empty" v-if="canDisplayEmptyState">You have no recent activity.</p>
     <div ref="chart" v-if="canDisplayChart"></div>
   </Modal>
 </template>
@@ -103,6 +104,7 @@ export default {
         },
         xaxis: {
           categories: [],
+          min: 0,
           axisBorder: {
             color: '#E9EEF7'
           },
@@ -196,13 +198,36 @@ export default {
   },
   computed: {
     canDisplayLoader() {
-      return this.shouldDisplayLoader && !this.shouldDisplayChart && !this.shouldDisplayError;
+      return (
+        this.shouldDisplayLoader &&
+        !this.shouldDisplayChart &&
+        !this.shouldDisplayError &&
+        !this.storedPomodoros.hasPomodoros
+      );
     },
     canDisplayChart() {
-      return !this.shouldDisplayLoader && this.shouldDisplayChart && !this.shouldDisplayError;
+      return (
+        !this.shouldDisplayLoader &&
+        this.shouldDisplayChart &&
+        !this.shouldDisplayError &&
+        this.storedPomodoros.hasPomodoros
+      );
     },
     canDisplayError() {
-      return !this.shouldDisplayLoader && !this.shouldDisplayChart && this.shouldDisplayError;
+      return (
+        !this.shouldDisplayLoader &&
+        !this.shouldDisplayChart &&
+        this.shouldDisplayError &&
+        !this.storedPomodoros.hasPomodoros
+      );
+    },
+    canDisplayEmptyState() {
+      return (
+        !this.shouldDisplayLoader &&
+        !this.shouldDisplayChart &&
+        !this.shouldDisplayError &&
+        !this.storedPomodoros.hasPomodoros
+      );
     }
   },
   watch: {
@@ -216,6 +241,11 @@ export default {
           });
           PomodoroHelper.getAll()
             .then((res) => {
+              if (res.docs.length === 0) {
+                this.shouldDisplayLoader = false;
+                return;
+              }
+
               // To avoid content jumping
               setTimeout(() => {
                 this.shouldDisplayLoader = false;
@@ -264,36 +294,46 @@ export default {
 }
 
 // prettier-ignore
-.loader{
+.loader {
   @include margin.vertical((
-    xsm: 25
+      xsm: 25
   ));
-  &__animation{
+
+  &__animation {
     display: flex;
     width: 150px;
     margin-left: auto;
     margin-right: auto;
   }
-  &__title{
+
+  &__title {
     font-weight: 600;
     text-align: center;
     color: map.get(text.$main, 900);
     @include font-size.responsive((
-      xsm: map.get(major-second.$scale, 4)
+        xsm: map.get(major-second.$scale, 4)
     ));
   }
 }
 
+.error {
+  color: map.get(text.$main, 900);
+}
+
+.empty {
+  color: map.get(text.$main, 700);
+}
+
 // prettier-ignore
-.error{
+.error,
+.empty{
   font-weight: 600;
   text-align: center;
-  color: map.get(text.$main, 900);
   @include margin.vertical((
-    xsm: 10
+      xsm: 10
   ));
   @include font-size.responsive((
-    xsm: map.get(major-second.$scale, 3)
+      xsm: map.get(major-second.$scale, 3)
   ));
 }
 </style>

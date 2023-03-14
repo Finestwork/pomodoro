@@ -9,18 +9,15 @@ import 'vue-toastification/dist/index.css';
 import 'floating-vue/dist/style.css';
 import 'nprogress/nprogress.css';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyCuoGNaLWyct6-U9sNy9pSKJ_2lBaEFQuw',
-  authDomain: 'pomofocus-app.firebaseapp.com',
-  projectId: 'pomofocus-app',
-  storageBucket: 'pomofocus-app.appspot.com',
-  messagingSenderId: '1035010712294',
-  appId: '1:1035010712294:web:930a19fc52d1e79b191127',
-  measurementId: 'G-DL6ZKE4MYN'
-};
-
 // Initialize Firebase
-initializeApp(firebaseConfig);
+initializeApp({
+  apiKey: 'AIzaSyDDo6-6YDQxMu4ESIdfPNMVag5mMcNT8ac',
+  authDomain: 'pomotasker-app.firebaseapp.com',
+  projectId: 'pomotasker-app',
+  storageBucket: 'pomotasker-app.appspot.com',
+  messagingSenderId: '860162131029',
+  appId: '1:860162131029:web:c14e28504a6abc52c8c0dc'
+});
 
 createApp(App)
   .use(router)

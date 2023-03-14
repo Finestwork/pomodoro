@@ -64,9 +64,9 @@ export default {
     };
   },
   mounted() {
-    this.checkCurrentlyLoggedInUser();
     Nprogress.configure({ showSpinner: false });
     Nprogress.start();
+    this.checkCurrentlyLoggedInUser();
   },
   methods: {
     onBeforeLeave(el) {
