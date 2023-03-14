@@ -67,9 +67,6 @@ export default {
     };
   },
   mounted() {
-    /*
-     TODO: ERROR HANDLING
-     */
     UserCollection.getDocument()
       .then((res) => {
         const DOC = doc(getFirestore(), 'Users', res.docs[0].id);
@@ -94,7 +91,10 @@ export default {
         this.getStoredPomodorosFromFirebase();
       })
       .catch(() => {
-        // Server error I guess?
+        useToast().error(
+          'Unable to get your saved room settings from the database.',
+          this.toastOptions
+        );
       });
   },
   methods: {
