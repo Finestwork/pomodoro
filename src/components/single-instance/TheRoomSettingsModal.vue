@@ -27,7 +27,7 @@
         class="modal__text-input-groups"
         label="Pomodoro Duration"
         placeholder="Pomodoro's duration"
-        pop-msg="Determines how many minutes you want your pomodoro session to be, which can be adjusted based on personal preference and the nature of the task at hand."
+        pop-msg="Determines how many minutes you want your pomodoro session to be, which can be adjusted based on personal preference and the nature of the task at hand. Ex: 5 is equivalent to 5 minutes"
         :color-state="colorState"
         :value="pomodoroDuration"
       />
@@ -81,6 +81,7 @@ import BaseButtonPlayful from '@/components/global/buttons/BaseButtonPlayful.vue
 import BaseSingleLineAlert from '@/components/global/alerts/BaseSingleLineAlert.vue';
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
 import UserCollection from '@/assets/js/firestore/user-collection';
+import TypeHelper from '@/assets/js/helpers/type-helper';
 
 export default {
   components: {
@@ -114,22 +115,40 @@ export default {
     };
   },
   updated() {
-    this.pomodoroDuration = this.roomSettingsStore.pomodoroDuration;
-    this.pomodoros = this.roomSettingsStore.pomodoros;
-    this.shortBreak = this.roomSettingsStore.shortBreakLength;
-    this.longBreak = this.roomSettingsStore.longBreakLength;
+    this.getSettingsFromStore();
   },
   emits: ['onModalClose'],
   methods: {
-    saveSettings() {
-      this.shouldShowSuccessAlert = false;
-      this.shouldShowDangerAlert = false;
-      this.isBtnLoading = true;
-
+    saveSettings(e) {
       const DURATION = this.$refs.pomodoroDuration.$refs.input.$refs.input.value;
       const POMODOROS = this.$refs.pomodoros.$refs.input.$refs.input.value;
       const SHORT_BREAK = this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value;
       const LONG_BREAK = this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value;
+      const ARE_FIELDS_VALID_NUM =
+        TypeHelper.isNumber(DURATION) &&
+        TypeHelper.isNumber(POMODOROS) &&
+        TypeHelper.isNumber(SHORT_BREAK) &&
+        TypeHelper.isNumber(LONG_BREAK);
+      const ARE_FIELDS_VALID_INT =
+        TypeHelper.isInteger(DURATION) &&
+        TypeHelper.isInteger(POMODOROS) &&
+        TypeHelper.isInteger(SHORT_BREAK) &&
+        TypeHelper.isInteger(LONG_BREAK);
+
+      // Fields are not valid
+      if (!ARE_FIELDS_VALID_NUM || !ARE_FIELDS_VALID_INT) {
+        this.$refs.pomodoroDuration.$refs.input.$refs.input.value = this.pomodoroDuration;
+        this.$refs.pomodoros.$refs.input.$refs.input.value = this.pomodoros;
+        this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
+        this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
+
+        e.currentTarget.blur();
+        return;
+      }
+
+      this.shouldShowSuccessAlert = false;
+      this.shouldShowDangerAlert = false;
+      this.isBtnLoading = true;
 
       const DATA = {
         roomSettings: {
@@ -148,6 +167,7 @@ export default {
           this.roomSettingsStore.changeLongBreakLength(parseInt(LONG_BREAK));
           this.shouldShowSuccessAlert = true;
           this.isBtnLoading = false;
+          this.getSettingsFromStore();
         })
         .catch(() => {
           this.shouldShowDangerAlert = true;
@@ -164,6 +184,19 @@ export default {
       this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
       this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
       this.$emit('onModalClose');
+    },
+
+    /*
+     * ===========
+     * Helpers
+     * ===========
+     */
+
+    getSettingsFromStore() {
+      this.pomodoroDuration = this.roomSettingsStore.pomodoroDuration;
+      this.pomodoros = this.roomSettingsStore.pomodoros;
+      this.shortBreak = this.roomSettingsStore.shortBreakLength;
+      this.longBreak = this.roomSettingsStore.longBreakLength;
     }
   }
 };
