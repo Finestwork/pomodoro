@@ -1,13 +1,20 @@
-# Installed Packages
-- PostCSS
-    - Autoprefixer
-    - CSSNano for minimizing & optimizing css files.
-    - PurgeCSS for removing unused CSS.
+![github banner.png](github%20banner.png)
 
-- Sass as a pre-processor for html and css.
-- Normalize.css
-- Vite as a bundler tool.
+Welcome to PomoTasker - a user-friendly and open-source project that leverages modern web technologies to provide a productivity solution designed specifically for students who want to focus on their study sessions. PomoTasker utilizes a range of technologies including Vite, Pinia, Firebase Firestore, Vue.js, and Sass, to offer a fast, responsive, and customizable tool that helps you stay on track.
 
-# Installation
-- run `npm install`
-- run `npm run dev` or `npm run build`.
+As an open-source project, PomoTasker is fully customizable, and you are free to modify and implement features according to your specific needs. We encourage you to get involved in the project and contribute to the community. Happy coding!
+
+&nbsp;
+
+### How to install
+To install and run PomoTasker, you will need to have knowledge of how to install npm packages. Follow these steps to get started:
+
+- Clone the repository onto your local machine using the git clone command followed by the repository link.
+
+- Navigate to the project directory using the cd command.
+
+- Run the npm install command to install all the required packages and dependencies for the project.
+
+- Once the installation is complete, use the npm run dev command to start the development server and launch the project in your browser.
+
+- You should now be able to use PomoTasker on your local machine.
