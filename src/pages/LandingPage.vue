@@ -13,7 +13,7 @@
             One task at a <span class="home__slogan-sub-title">time</span>
           </h1>
           <p class="home__slogan-msg">
-            Stay on task and crush your goals with PomoFocus - your trusty productivity companion
+            Stay on task and crush your goals with PomoTasker - your trusty productivity companion
           </p>
         </div>
       </div>
@@ -299,6 +299,7 @@ export default {
     }
 
     &-msg {
+      line-height: 1.5;
       @include margin.top((
           xsm: 15
       ));

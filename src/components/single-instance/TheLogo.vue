@@ -3,7 +3,7 @@
     <span class="logo__box">
       <PomoBuddyLogo />
     </span>
-    <span class="logo__text">Pomofocus</span>
+    <span class="logo__text">PomoTasker</span>
   </div>
 </template>
 
