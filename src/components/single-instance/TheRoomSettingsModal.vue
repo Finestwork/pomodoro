@@ -64,6 +64,7 @@
 
       <BaseSwitch
         ref="enableNotification"
+        class="modal__text-input-groups"
         label="Enable notification"
         type="checkbox"
         id="switchNotification"
@@ -74,6 +75,7 @@
 
       <BaseSwitch
         ref="enableSound"
+        class="modal__text-input-groups"
         label="Enable Sound"
         type="checkbox"
         id="switchSound"
