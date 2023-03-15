@@ -139,13 +139,22 @@ export default {
           if (NotificationHelper.isEnabled()) {
             switch (this.currentColorState) {
               case 'focus':
-                NotificationHelper.create('Focus Session Done!');
+                NotificationHelper.create('Focus session is done!', {
+                  icon: `${window.location.origin}/images/logo/pomotasker.svg`,
+                  body: "Do not be too hard on yourself, take a break.  It's important to take breaks to recharge your brain and avoid burnout."
+                });
                 break;
               case 'short-break':
-                NotificationHelper.create('Short Break Session Done!');
+                NotificationHelper.create('Short break session is done', {
+                  icon: `${window.location.origin}/images/logo/pomotasker.svg`,
+                  body: 'This is your time to focus on your task and give it your all. Remember to stay hydrated and take care of yourself during this time. You got this!'
+                });
                 break;
               case 'long-break':
-                NotificationHelper.create('Long Break Session Done!');
+                NotificationHelper.create('Long Break Session Done!', {
+                  icon: `${window.location.origin}/images/logo/pomotasker.svg`,
+                  body: "Welcome back from your long break! I hope you feel refreshed and re-energized. Let's dive back in and tackle the next set of tasks with renewed energy and focus!"
+                });
             }
           }
 

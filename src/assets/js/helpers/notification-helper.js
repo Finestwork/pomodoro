@@ -17,14 +17,13 @@ export default class NotificationHelper {
     });
   }
 
-  static create(msg) {
+  static create(msg, opt) {
     // If browser do not support notification
     if (!('Notification' in window)) return;
 
     // If notification is always granted, create a notification
     if (Notification.permission === 'granted') {
-      new Notification(msg);
-      return;
+      new Notification(msg, opt);
     }
   }
 }
