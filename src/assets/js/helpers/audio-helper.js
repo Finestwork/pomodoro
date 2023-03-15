@@ -26,6 +26,7 @@ export default class AudioHelper {
       const AUDIO = new Audio();
       AUDIO.src = audioSrc;
       AUDIO.preload = 'auto';
+
       const onCanPlayThrough = () => {
         Object.assign(AudioHelper.#PRELOADED_AUDIOS, { [PROP]: AUDIO });
       };

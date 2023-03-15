@@ -2,7 +2,7 @@
 
 Welcome to PomoTasker - a user-friendly and open-source project that leverages modern web technologies to provide a productivity solution designed specifically for students who want to focus on their study sessions. PomoTasker utilizes a range of technologies including Vite, Pinia, Firebase Firestore, Vue.js, and Sass, to offer a fast, responsive, and customizable tool that helps you stay on track.
 
-As an open-source project, PomoTasker is fully customizable, and you are free to modify and implement features according to your specific needs. We encourage you to get involved in the project and contribute to the community. Happy coding!
+As an open-source project, PomoTasker is fully customizable, and you are free to modify and implement features according to your specific needs. I encourage you to get involved in the project and contribute to the community. Happy coding!
 
 &nbsp;
 
