@@ -61,6 +61,8 @@
         :color-state="colorState"
         :value="longBreak"
       />
+
+      <BaseSwitch label="Enable notification" id="switchSound" :color-state="colorState" />
     </div>
     <BaseButtonPlayful
       class="modal__save-btn"
@@ -79,6 +81,9 @@ import Modal from '@/components/global/Modal.vue';
 import BaseNumericUpDownInput from '@/components/global/forms/BaseNumericUpDownInput.vue';
 import BaseButtonPlayful from '@/components/global/buttons/BaseButtonPlayful.vue';
 import BaseSingleLineAlert from '@/components/global/alerts/BaseSingleLineAlert.vue';
+import BaseSwitch from '@/components/global/forms/BaseSwitch.vue';
+
+// Helpers
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
 import UserCollection from '@/assets/js/firestore/user-collection';
 import TypeHelper from '@/assets/js/helpers/type-helper';
@@ -88,7 +93,8 @@ export default {
     Modal,
     BaseNumericUpDownInput,
     BaseButtonPlayful,
-    BaseSingleLineAlert
+    BaseSingleLineAlert,
+    BaseSwitch
   },
   props: {
     showModal: {
