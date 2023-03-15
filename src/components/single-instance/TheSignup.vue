@@ -171,7 +171,7 @@ export default {
         .catch((err) => {
           this.toggleBtnLoading = false;
           if (err.code) {
-            this.errors.push(`• ${GoogleCodeErrors.getErrors[err.code]}.`);
+            this.errors.push(`• ${GoogleCodeErrors.getErrors[err.code]}`);
             return;
           }
 

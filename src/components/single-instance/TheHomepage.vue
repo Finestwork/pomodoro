@@ -86,6 +86,7 @@ export default {
     UserCollection.getDocument()
       .then((res) => {
         if (res.docs.length === 0) {
+          this.$refs.root.style = null;
           this.$emit('homepageReady');
           return;
         }
@@ -118,6 +119,8 @@ export default {
         }, 250); // Add delay
       })
       .catch(() => {
+        this.$refs.root.style = null;
+
         useToast().error(
           'Unable to get your saved room settings from the database.',
           this.toastOptions
