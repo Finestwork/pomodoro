@@ -1,14 +1,14 @@
 <template>
   <TransitionGroup name="list" tag="div" class="pomo">
-    <div class="pomo-label pomo-focus" v-if="shouldDisplayFire">
+    <div class="pomo-label pomo-focus" key="w1" v-if="shouldDisplayFire">
       <span class="label__icon"><FireIcon /></span>
       <span class="label__text">Be Productive</span>
     </div>
-    <div class="pomo-label pomo-short-break" v-else-if="shouldDisplayShortBreak">
+    <div class="pomo-label pomo-short-break" key="w2" v-else-if="shouldDisplayShortBreak">
       <span class="label__icon"><MugHotIcon /></span>
       <span class="label__text">Short Break</span>
     </div>
-    <div class="pomo-label pomo-long-break" v-else-if="shouldDisplayLongBreak">
+    <div class="pomo-label pomo-long-break" key="w3" v-else-if="shouldDisplayLongBreak">
       <span class="label__icon"><SnoozeIcon /></span>
       <span class="label__text">Long Break</span>
     </div>
