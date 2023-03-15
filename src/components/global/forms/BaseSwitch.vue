@@ -1,9 +1,15 @@
 <template>
   <div :class="getRootClass">
     <span class="switch__label">{{ label }}</span>
-
     <div class="switch__wrapper">
-      <input type="checkbox" :id="id" />
+      <input
+        ref="input"
+        :type="type"
+        name="name"
+        :id="id"
+        :checked="isChecked"
+        @change="onChange"
+      />
       <label :for="id"></label>
     </div>
   </div>
@@ -12,6 +18,9 @@
 <script>
 export default {
   props: {
+    isChecked: {
+      type: Boolean
+    },
     // focus, short-break, long-break
     colorState: {
       type: String,
@@ -21,8 +30,21 @@ export default {
       type: String,
       required: true
     },
+    type: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String
+    },
     label: {
       type: String
+    }
+  },
+  emits: ['onChange'],
+  methods: {
+    onChange(e) {
+      this.$emit('onChange', e);
     }
   },
   computed: {

@@ -39,6 +39,7 @@ import AudioHelper from '@/assets/js/helpers/audio-helper';
 // NPM
 import { useToast } from 'vue-toastification';
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
+import NotificationHelper from '@/assets/js/helpers/notification-helper';
 
 export default {
   components: { TheNavbar, ThePomoLabel, BaseTimerText, ThePomodoroControls },
@@ -85,6 +86,7 @@ export default {
           this.roomSettingsStore.changeNumberOfPomodoro(pomodoros);
           this.roomSettingsStore.changeShortBreakLength(shortBreak);
           this.roomSettingsStore.changeLongBreakLength(longBreak);
+          this.roomSettingsStore.changeNotification(false);
           this.timerText = useRoomSettingsStore().timerText;
 
           // Everytime the settings is updated, this will reset the pomodoro sessions
@@ -129,10 +131,25 @@ export default {
         DocumentTitleHelper.changeOnState(this.currentColorState, ` - ${this.timerText}`);
 
         if (this.currentDuration === 0) {
-          this.getNextSession();
           clearInterval(this.timerIntervalId);
           this.timerIntervalId = false;
           this.isPlaying = false;
+
+          // Send notification
+          if (NotificationHelper.isEnabled()) {
+            switch (this.currentColorState) {
+              case 'focus':
+                NotificationHelper.create('Focus Session Done!');
+                break;
+              case 'short-break':
+                NotificationHelper.create('Short Break Session Done!');
+                break;
+              case 'long-break':
+                NotificationHelper.create('Long Break Session Done!');
+            }
+          }
+
+          this.getNextSession();
 
           switch (this.currentColorState) {
             case 'focus':

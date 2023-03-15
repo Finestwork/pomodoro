@@ -62,7 +62,15 @@
         :value="longBreak"
       />
 
-      <BaseSwitch label="Enable notification" id="switchSound" :color-state="colorState" />
+      <BaseSwitch
+        ref="enableNotification"
+        label="Enable notification"
+        type="checkbox"
+        id="switchSound"
+        :is-checked="notificationEnabled"
+        :color-state="colorState"
+        v-if="shouldShowNotificationBtn"
+      />
     </div>
     <BaseButtonPlayful
       class="modal__save-btn"
@@ -87,6 +95,7 @@ import BaseSwitch from '@/components/global/forms/BaseSwitch.vue';
 import { useRoomSettingsStore } from '@/stores/room-settings-store';
 import UserCollection from '@/assets/js/firestore/user-collection';
 import TypeHelper from '@/assets/js/helpers/type-helper';
+import NotificationHelper from '@/assets/js/helpers/notification-helper';
 
 export default {
   components: {
@@ -115,6 +124,7 @@ export default {
       pomodoros: roomSettingsStore.pomodoros,
       shortBreak: roomSettingsStore.shortBreakLength,
       longBreak: roomSettingsStore.longBreakLength,
+      notificationEnabled: roomSettingsStore.notificationEnabled,
       isBtnLoading: false,
       shouldShowSuccessAlert: false,
       shouldShowDangerAlert: false
@@ -130,6 +140,8 @@ export default {
       const POMODOROS = this.$refs.pomodoros.$refs.input.$refs.input.value;
       const SHORT_BREAK = this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value;
       const LONG_BREAK = this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value;
+      const IS_NOTIF_ENABLED = this.$refs.enableNotification.$refs.input.checked;
+
       const ARE_FIELDS_VALID_NUM =
         TypeHelper.isNumber(DURATION) &&
         TypeHelper.isNumber(POMODOROS) &&
@@ -143,11 +155,7 @@ export default {
 
       // Fields are not valid
       if (!ARE_FIELDS_VALID_NUM || !ARE_FIELDS_VALID_INT) {
-        this.$refs.pomodoroDuration.$refs.input.$refs.input.value = this.pomodoroDuration;
-        this.$refs.pomodoros.$refs.input.$refs.input.value = this.pomodoros;
-        this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
-        this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
-
+        this.resetFields();
         e.currentTarget.blur();
         return;
       }
@@ -165,15 +173,28 @@ export default {
         }
       };
 
+      // Update the stored settings from firestore
       UserCollection.update(DATA)
         .then(() => {
           this.roomSettingsStore.changePomodoroDuration(parseInt(DURATION));
           this.roomSettingsStore.changeNumberOfPomodoro(parseInt(POMODOROS));
           this.roomSettingsStore.changeShortBreakLength(parseInt(SHORT_BREAK));
           this.roomSettingsStore.changeLongBreakLength(parseInt(LONG_BREAK));
+          this.roomSettingsStore.changeNotification(IS_NOTIF_ENABLED);
           this.shouldShowSuccessAlert = true;
           this.isBtnLoading = false;
           this.getSettingsFromStore();
+
+          // As long as user permits notification, but disabled it, no need to update the firestore
+          if (IS_NOTIF_ENABLED) {
+            NotificationHelper.askPermission().then((res) => {
+              if (res === 'default') {
+                this.notificationEnabled = false;
+                this.roomSettingsStore.changeNotification(false);
+                this.$refs.enableNotification.$refs.input.checked = false;
+              }
+            });
+          }
         })
         .catch(() => {
           this.shouldShowDangerAlert = true;
@@ -184,11 +205,7 @@ export default {
       this.shouldShowSuccessAlert = false;
       this.shouldShowDangerAlert = false;
       this.isBtnLoading = false;
-
-      this.$refs.pomodoroDuration.$refs.input.$refs.input.value = this.pomodoroDuration;
-      this.$refs.pomodoros.$refs.input.$refs.input.value = this.pomodoros;
-      this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
-      this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
+      this.resetFields();
       this.$emit('onModalClose');
     },
 
@@ -197,12 +214,24 @@ export default {
      * Helpers
      * ===========
      */
+    resetFields() {
+      this.$refs.pomodoroDuration.$refs.input.$refs.input.value = this.pomodoroDuration;
+      this.$refs.pomodoros.$refs.input.$refs.input.value = this.pomodoros;
+      this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
+      this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
+      this.$refs.enableNotification.$refs.input.checked = this.notificationEnabled;
+    },
 
     getSettingsFromStore() {
       this.pomodoroDuration = this.roomSettingsStore.pomodoroDuration;
       this.pomodoros = this.roomSettingsStore.pomodoros;
       this.shortBreak = this.roomSettingsStore.shortBreakLength;
       this.longBreak = this.roomSettingsStore.longBreakLength;
+    }
+  },
+  computed: {
+    shouldShowNotificationBtn() {
+      return 'Notification' in window;
     }
   }
 };

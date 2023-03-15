@@ -6,7 +6,10 @@ const useRoomSettingsStore = defineStore('roomSettingsStore', {
     pomodoros: 4,
     pomodoroDuration: 25, // in minutes
     shortBreakLength: 5, // in minutes
-    longBreakLength: 15 // in minutes
+    longBreakLength: 15, // in minutes,
+
+    // Notification is not stored in firestore, just a local copy
+    notificationEnabled: false
   }),
   getters: {
     notYetStarted() {
@@ -32,6 +35,9 @@ const useRoomSettingsStore = defineStore('roomSettingsStore', {
     },
     changeLongBreakLength(newLength) {
       this.longBreakLength = newLength;
+    },
+    changeNotification(notificationEnabled) {
+      this.notificationEnabled = notificationEnabled;
     },
     decrementPomodoroLeft() {
       this.pomodorosLeft--;
