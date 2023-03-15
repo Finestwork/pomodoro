@@ -180,7 +180,6 @@ export default {
           this.roomSettingsStore.changeNumberOfPomodoro(parseInt(POMODOROS));
           this.roomSettingsStore.changeShortBreakLength(parseInt(SHORT_BREAK));
           this.roomSettingsStore.changeLongBreakLength(parseInt(LONG_BREAK));
-          this.roomSettingsStore.changeNotification(IS_NOTIF_ENABLED);
           this.shouldShowSuccessAlert = true;
           this.isBtnLoading = false;
           this.getSettingsFromStore();
@@ -188,12 +187,17 @@ export default {
           // As long as user permits notification, but disabled it, no need to update the firestore
           if (IS_NOTIF_ENABLED) {
             NotificationHelper.askPermission().then((res) => {
+              if (res === 'granted') {
+                this.notificationEnabled = true;
+                this.roomSettingsStore.changeNotification(true);
+                this.$refs.enableNotification.$refs.input.checked = true;
+              }
               if (res === 'default') {
-                this.notificationEnabled = false;
-                this.roomSettingsStore.changeNotification(false);
-                this.$refs.enableNotification.$refs.input.checked = false;
+                this.disableNotification();
               }
             });
+          } else {
+            this.disableNotification();
           }
         })
         .catch(() => {
@@ -214,6 +218,13 @@ export default {
      * Helpers
      * ===========
      */
+
+    disableNotification() {
+      this.notificationEnabled = false;
+      this.roomSettingsStore.changeNotification(false);
+      this.$refs.enableNotification.$refs.input.checked = false;
+    },
+
     resetFields() {
       this.$refs.pomodoroDuration.$refs.input.$refs.input.value = this.pomodoroDuration;
       this.$refs.pomodoros.$refs.input.$refs.input.value = this.pomodoros;
