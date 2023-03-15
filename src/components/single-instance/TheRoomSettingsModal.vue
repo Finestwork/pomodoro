@@ -161,6 +161,8 @@ export default {
   emits: ['onModalClose'],
   methods: {
     saveSettings(e) {
+      this.shouldShowSuccessAlert = false;
+      this.shouldShowDangerAlert = false;
       const DURATION = this.$refs.pomodoroDuration.$refs.input.$refs.input.value;
       const POMODOROS = this.$refs.pomodoros.$refs.input.$refs.input.value;
       const SHORT_BREAK = this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value;
@@ -184,8 +186,18 @@ export default {
         return;
       }
 
-      this.shouldShowSuccessAlert = false;
-      this.shouldShowDangerAlert = false;
+      // Fields should not be the same with their old values
+      const ARE_FIELDS_NOT_THE_SAME =
+        this.roomSettingsStore.pomodoros === parseInt(POMODOROS) &&
+        this.roomSettingsStore.pomodoroDuration === parseInt(DURATION) &&
+        this.roomSettingsStore.shortBreakLength === parseInt(SHORT_BREAK) &&
+        this.roomSettingsStore.longBreakLength === parseInt(LONG_BREAK);
+
+      if (ARE_FIELDS_NOT_THE_SAME) {
+        e.currentTarget.blur();
+        return;
+      }
+
       this.isBtnLoading = true;
 
       const DATA = {
