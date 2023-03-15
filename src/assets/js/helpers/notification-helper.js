@@ -3,6 +3,14 @@ export default class NotificationHelper {
     return 'Notification' in window && Notification.permission === 'granted';
   }
 
+  static trackStatus(cb) {
+    if ('navigator' in window) {
+      navigator.permissions.query({ name: 'notifications' }).then((permission) => {
+        permission.addEventListener('change', cb);
+      });
+    }
+  }
+
   static askPermission() {
     return new Promise((resolve, reject) => {
       // If browser do not support notification

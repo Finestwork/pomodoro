@@ -71,6 +71,7 @@
         :is-checked="notificationEnabled"
         :color-state="colorState"
         v-if="shouldShowNotificationBtn"
+        @on-change="notifyUser"
       />
 
       <BaseSwitch
@@ -81,7 +82,7 @@
         id="switchSound"
         :is-checked="soundEnabled"
         :color-state="colorState"
-        @on-change="onChangeToggleSound"
+        @on-change="toggleSound"
       />
     </div>
     <BaseButtonPlayful
@@ -144,8 +145,18 @@ export default {
       shouldShowDangerAlert: false
     };
   },
+  mounted() {
+    NotificationHelper.trackStatus((e) => {
+      if (e.originalTarget.state !== 'granted') {
+        this.changeNotificationState(false);
+      }
+    });
+  },
   updated() {
     this.getSettingsFromStore();
+    if (NotificationHelper.isEnabled()) {
+      this.changeNotificationState(true);
+    }
   },
   emits: ['onModalClose'],
   methods: {
@@ -154,7 +165,6 @@ export default {
       const POMODOROS = this.$refs.pomodoros.$refs.input.$refs.input.value;
       const SHORT_BREAK = this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value;
       const LONG_BREAK = this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value;
-      const IS_NOTIF_ENABLED = this.$refs.enableNotification.$refs.input.checked;
 
       const ARE_FIELDS_VALID_NUM =
         TypeHelper.isNumber(DURATION) &&
@@ -197,22 +207,6 @@ export default {
           this.shouldShowSuccessAlert = true;
           this.isBtnLoading = false;
           this.getSettingsFromStore();
-
-          // As long as user permits notification, but disabled it, no need to update the firestore
-          if (IS_NOTIF_ENABLED) {
-            NotificationHelper.askPermission().then((res) => {
-              if (res === 'granted') {
-                this.notificationEnabled = true;
-                this.roomSettingsStore.changeNotification(true);
-                this.$refs.enableNotification.$refs.input.checked = true;
-              }
-              if (res === 'default') {
-                this.disableNotification();
-              }
-            });
-          } else {
-            this.disableNotification();
-          }
         })
         .catch(() => {
           this.shouldShowDangerAlert = true;
@@ -226,7 +220,23 @@ export default {
       this.resetFields();
       this.$emit('onModalClose');
     },
-    onChangeToggleSound() {
+    notifyUser() {
+      const CURRENT_STATE = this.$refs.enableNotification.$refs.input.checked;
+
+      if (!CURRENT_STATE) return;
+
+      // As long as user permits notification, but disabled it, no need to update the firestore
+      NotificationHelper.askPermission().then((res) => {
+        if (res === 'granted') {
+          this.changeNotificationState(true);
+          return;
+        }
+        if (res === 'default' || res === 'denied') {
+          this.changeNotificationState(false);
+        }
+      });
+    },
+    toggleSound() {
       const IS_SOUND_ENABLED = this.$refs.enableSound.$refs.input.checked;
       this.soundEnabled = IS_SOUND_ENABLED;
       this.roomSettingsStore.changeSound(IS_SOUND_ENABLED);
@@ -238,12 +248,11 @@ export default {
      * ===========
      */
 
-    disableNotification() {
-      this.notificationEnabled = false;
-      this.roomSettingsStore.changeNotification(false);
-      this.$refs.enableNotification.$refs.input.checked = false;
+    changeNotificationState(state) {
+      this.notificationEnabled = state;
+      this.roomSettingsStore.changeNotification(state);
+      this.$refs.enableNotification.$refs.input.checked = state;
     },
-
     resetFields() {
       this.$refs.pomodoroDuration.$refs.input.$refs.input.value = this.pomodoroDuration;
       this.$refs.pomodoros.$refs.input.$refs.input.value = this.pomodoros;
