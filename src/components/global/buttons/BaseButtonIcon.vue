@@ -119,4 +119,63 @@ export default {
     }
   }
 }
+
+.dark {
+  .btn-icon {
+    &.focus {
+      background-color: darken(map.get(main.$primary, 900), 2%);
+      &:focus {
+        @include box-shadow-primary.lightness(lighter, md);
+      }
+
+      &:focus,
+      &:hover {
+        background-color: lighten(map.get(main.$primary, 900), 5%);
+        :deep(svg path) {
+          fill: map.get(main.$primary, 600);
+        }
+      }
+
+      :deep(svg) {
+        fill: darken(map.get(main.$primary, 800), 2%);
+      }
+    }
+    &.short-break {
+      background-color: darken(map.get(main.$secondary, 900), 2%);
+      &:focus {
+        @include box-shadow-secondary.lightness(lighter, md);
+      }
+
+      &:focus,
+      &:hover {
+        background-color: lighten(map.get(main.$secondary, 900), 5%);
+        :deep(svg path) {
+          fill: map.get(main.$secondary, 600);
+        }
+      }
+
+      :deep(svg) {
+        fill: map.get(main.$secondary, 800);
+      }
+    }
+    &.long-break {
+      background-color: map.get(main.$tertiary, 900);
+      &:focus {
+        @include box-shadow-tertiary.lightness(lighter, md);
+      }
+
+      &:focus,
+      &:hover {
+        background-color: lighten(map.get(main.$tertiary, 900), 5%);
+        :deep(svg path) {
+          fill: map.get(main.$tertiary, 600);
+        }
+      }
+
+      :deep(svg) {
+        fill: map.get(main.$tertiary, 700);
+      }
+    }
+  }
+}
 </style>

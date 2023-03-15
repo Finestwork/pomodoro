@@ -84,6 +84,16 @@
         :color-state="colorState"
         @on-change="toggleSound"
       />
+      <BaseSwitch
+        ref="enableDarkMode"
+        class="modal__text-input-groups"
+        label="Dark Mode"
+        type="checkbox"
+        id="switchDarkMode"
+        :is-checked="darkModeEnabled"
+        :color-state="colorState"
+        @on-change="toggleDarkMode"
+      />
     </div>
     <BaseButtonPlayful
       class="modal__save-btn"
@@ -146,6 +156,9 @@ export default {
     };
   },
   mounted() {
+    const IS_DARK_MODE = localStorage.getItem('PomoTaskerDarkMode');
+    if (IS_DARK_MODE !== null) this.darkModeEnabled = true;
+
     NotificationHelper.trackStatus((e) => {
       if (e.originalTarget.state !== 'granted') {
         this.changeNotificationState(false);
@@ -252,6 +265,17 @@ export default {
       const IS_SOUND_ENABLED = this.$refs.enableSound.$refs.input.checked;
       this.soundEnabled = IS_SOUND_ENABLED;
       this.roomSettingsStore.changeSound(IS_SOUND_ENABLED);
+    },
+    toggleDarkMode() {
+      const IS_ENABLED = this.$refs.enableDarkMode.$refs.input.checked;
+
+      if (IS_ENABLED) {
+        document.body.classList.add('dark');
+        localStorage.setItem('PomoTaskerDarkMode', true);
+      } else {
+        document.body.classList.remove('dark');
+        localStorage.removeItem('PomoTaskerDarkMode');
+      }
     },
 
     /*

@@ -56,6 +56,23 @@ export default {
 @use '../../assets/scss/2-tools/mixins/css-properties/margin';
 @use '../../assets/scss/2-tools/mixins/css-properties/width-and-height';
 
+@mixin color-states($map) {
+  background-color: map.get($map, bg);
+  border: 4px solid map.get($map, border);
+
+  .label__icon {
+    :deep(svg) {
+      path {
+        fill: map.get($map, fill);
+      }
+    }
+  }
+
+  .label__text {
+    color: map.get($map, color);
+  }
+}
+
 // prettier-ignore
 .pomo{
   perspective: 999px;
@@ -103,23 +120,6 @@ export default {
       }
     }
 
-    @mixin color-states($map) {
-      background-color: map.get($map, bg);
-      border: 4px solid map.get($map, border);
-
-      .label__icon {
-        :deep(svg) {
-          path {
-            fill: map.get($map, fill);
-          }
-        }
-      }
-
-      .label__text {
-        color: map.get($map, color);
-      }
-    }
-
     &.pomo-focus {
       @include color-states((
           bg: map.get(main.$primary, 100),
@@ -144,6 +144,36 @@ export default {
           border: map.get(main.$tertiary, 500),
           fill: map.get(main.$tertiary, 500),
           color: map.get(main.$tertiary, 500)
+      ));
+    }
+  }
+}
+
+// prettier-ignore
+.dark{
+  .pomo-label{
+    &.pomo-focus {
+      @include color-states((
+          bg: map.get(main.$primary, 800),
+          border: lighten(map.get(main.$primary, 900), 5%),
+          fill: map.get(main.$primary, 100),
+          color: map.get(main.$primary, 100)
+      ));
+    }
+    &.pomo-short-break {
+      @include color-states((
+          bg: map.get(main.$secondary, 800),
+          border: lighten(map.get(main.$secondary, 900), 5%),
+          fill: map.get(main.$secondary, 100),
+          color: map.get(main.$secondary, 100)
+      ));
+    }
+    &.pomo-long-break {
+      @include color-states((
+          bg: map.get(main.$tertiary, 800),
+          border: lighten(map.get(main.$tertiary, 900), 5%),
+          fill: map.get(main.$tertiary, 100),
+          color: map.get(main.$tertiary, 100)
       ));
     }
   }

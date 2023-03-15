@@ -62,7 +62,7 @@ export default {
       color: map.get(main.$primary, 600);
     }
     :deep(svg path) {
-      fill: map.get(main.$primary, 500);
+      fill: map.get(main.$primary, 600);
     }
   }
   &.short-break {
@@ -70,7 +70,7 @@ export default {
       color: map.get(main.$secondary, 600);
     }
     :deep(svg path) {
-      fill: map.get(main.$secondary, 500);
+      fill: map.get(main.$secondary, 600);
     }
   }
   &.long-break {
@@ -78,7 +78,36 @@ export default {
       color: map.get(main.$tertiary, 600);
     }
     :deep(svg path) {
-      fill: map.get(main.$tertiary, 500);
+      fill: map.get(main.$tertiary, 600);
+    }
+  }
+}
+
+.dark {
+  .logo {
+    &.focus {
+      .logo__text {
+        color: darken(map.get(main.$primary, 800), 2%);
+      }
+      :deep(svg path) {
+        fill: darken(map.get(main.$primary, 800), 2%);
+      }
+    }
+    &.short-break {
+      .logo__text {
+        color: map.get(main.$secondary, 800);
+      }
+      :deep(svg path) {
+        fill: map.get(main.$secondary, 800);
+      }
+    }
+    &.long-break {
+      .logo__text {
+        color: map.get(main.$tertiary, 800);
+      }
+      :deep(svg path) {
+        fill: map.get(main.$tertiary, 800);
+      }
     }
   }
 }

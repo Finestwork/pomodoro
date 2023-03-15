@@ -51,10 +51,12 @@ export default {
   emits: ['onTogglePlay', 'nextSession'],
   methods: {
     togglePlay(e) {
+      e.currentTarget.blur();
       AnimationHelper.bounce(e.currentTarget);
       this.$emit('onTogglePlay');
     },
     nextSession(e) {
+      e.currentTarget.blur();
       AnimationHelper.bounce(e.currentTarget);
       this.$emit('nextSession');
     }
@@ -163,6 +165,7 @@ export default {
         nextIcon: map.get(main.$primary, 600),
     ));
   }
+
   &.short-break {
     @include change-state((
         play: map.get(main.$secondary, 300),
@@ -173,6 +176,7 @@ export default {
         nextIcon: map.get(main.$secondary, 600),
     ));
   }
+
   &.long-break {
     @include change-state((
         play: map.get(main.$tertiary, 300),
@@ -182,6 +186,42 @@ export default {
         hoverNext: darken(map.get(main.$tertiary, 200), 6%),
         nextIcon: map.get(main.$tertiary, 600),
     ));
+  }
+}
+
+// prettier-ignore
+.dark {
+  .pomodoro-controls {
+    &.focus {
+      @include change-state((
+          play: map.get(main.$primary, 900),
+          playIcon: map.get(main.$primary, 400),
+          hoverPlay: darken(map.get(main.$primary, 800), 5%),
+          next: darken(map.get(main.$primary, 900), 3%),
+          hoverNext: darken(map.get(main.$primary, 800), 6%),
+          nextIcon: map.get(main.$primary, 100),
+      ));
+    }
+    &.short-break {
+      @include change-state((
+          play: map.get(main.$secondary, 900),
+          playIcon: map.get(main.$secondary, 400),
+          hoverPlay: darken(map.get(main.$secondary, 800), 5%),
+          next: darken(map.get(main.$secondary, 900), 3%),
+          hoverNext: darken(map.get(main.$secondary, 800), 6%),
+          nextIcon: map.get(main.$secondary, 100),
+      ));
+    }
+    &.long-break {
+      @include change-state((
+          play: map.get(main.$tertiary, 900),
+          playIcon: map.get(main.$tertiary, 400),
+          hoverPlay: darken(map.get(main.$tertiary, 800), 5%),
+          next: darken(map.get(main.$tertiary, 900), 3%),
+          hoverNext: darken(map.get(main.$tertiary, 800), 6%),
+          nextIcon: map.get(main.$tertiary, 100),
+      ));
+    }
   }
 }
 </style>

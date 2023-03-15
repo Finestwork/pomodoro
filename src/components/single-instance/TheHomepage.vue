@@ -71,6 +71,10 @@ export default {
   },
   mounted() {
     AudioHelper.init();
+    const IS_DARK_MODE = localStorage.getItem('PomoTaskerDarkMode');
+    if (IS_DARK_MODE !== null) document.body.classList.add('dark');
+
+    // Get the pomodoro room settings from firestore
     UserCollection.getDocument()
       .then((res) => {
         if (res.docs.length === 0) {
@@ -351,6 +355,22 @@ export default {
     @include margin.top((
         xsm: 15
     ));
+  }
+}
+
+.dark {
+  .homepage {
+    &.focus {
+      background-color: darken(map.get(main.$primary, 900), 10%);
+    }
+
+    &.short-break {
+      background-color: darken(map.get(main.$secondary, 900), 10%);
+    }
+
+    &.long-break {
+      background-color: darken(map.get(main.$tertiary, 900), 8%);
+    }
   }
 }
 </style>

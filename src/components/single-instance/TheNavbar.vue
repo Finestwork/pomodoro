@@ -160,4 +160,21 @@ export default {
     ));
   }
 }
+
+// prettier-ignore
+.dark{
+  .nav{
+    &.focus {
+      border-bottom: 2px dashed map.get(main.$primary, 900);
+    }
+
+    &.short-break {
+      border-bottom: 2px dashed map.get(main.$secondary, 900)
+    }
+
+    &.long-break {
+      border-bottom: 2px dashed map.get(main.$tertiary, 900)
+    }
+  }
+}
 </style>

@@ -96,4 +96,18 @@ export default {
     color: darken(map.get(main.$tertiary, 900), 3%);
   }
 }
+
+.dark {
+  .timer--text {
+    &.focus {
+      color: map.get(main.$primary, 100);
+    }
+    &.short-break {
+      color: map.get(main.$secondary, 100);
+    }
+    &.long-break {
+      color: map.get(main.$tertiary, 100);
+    }
+  }
+}
 </style>
