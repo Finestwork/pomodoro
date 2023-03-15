@@ -86,7 +86,6 @@ export default {
           this.roomSettingsStore.changeNumberOfPomodoro(pomodoros);
           this.roomSettingsStore.changeShortBreakLength(shortBreak);
           this.roomSettingsStore.changeLongBreakLength(longBreak);
-          this.roomSettingsStore.changeNotification(false);
           this.timerText = useRoomSettingsStore().timerText;
 
           // Everytime the settings is updated, this will reset the pomodoro sessions
@@ -117,13 +116,13 @@ export default {
       this.isPlaying = !this.isPlaying;
 
       if (!this.isPlaying) {
-        AudioHelper.pause();
+        if (this.roomSettingsStore.soundEnabled) AudioHelper.pause();
         clearInterval(this.timerIntervalId);
         DocumentTitleHelper.changeOnState(this.currentColorState, ' - Paused');
         return;
       }
 
-      AudioHelper.play();
+      if (this.roomSettingsStore.soundEnabled) AudioHelper.play();
       DocumentTitleHelper.changeOnState(this.currentColorState, ' - Playing');
       this.timerIntervalId = setInterval(() => {
         this.currentDuration--;
@@ -160,21 +159,24 @@ export default {
 
           this.getNextSession();
 
-          switch (this.currentColorState) {
-            case 'focus':
-              AudioHelper.focus();
-              break;
-            case 'short-break':
-              AudioHelper.shortBreak();
-              break;
-            case 'long-break':
-              AudioHelper.longBreak();
+          // After each session, create a sound notification
+          if (this.roomSettingsStore.soundEnabled) {
+            switch (this.currentColorState) {
+              case 'focus':
+                AudioHelper.focus();
+                break;
+              case 'short-break':
+                AudioHelper.shortBreak();
+                break;
+              case 'long-break':
+                AudioHelper.longBreak();
+            }
           }
         }
       }, 1000);
     },
     nextSession() {
-      AudioHelper.pause();
+      if (this.roomSettingsStore.soundEnabled) AudioHelper.pause();
       this.getNextSession();
     },
     getStoredPomodorosFromFirebase() {

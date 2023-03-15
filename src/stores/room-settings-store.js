@@ -8,8 +8,10 @@ const useRoomSettingsStore = defineStore('roomSettingsStore', {
     shortBreakLength: 5, // in minutes
     longBreakLength: 15, // in minutes,
 
-    // Notification is not stored in firestore, just a local copy
-    notificationEnabled: false
+    // Properties below are not stored in firestore, just a local copy
+    notificationEnabled: false,
+    soundEnabled: true,
+    darkModeEnabled: false
   }),
   getters: {
     notYetStarted() {
@@ -38,6 +40,12 @@ const useRoomSettingsStore = defineStore('roomSettingsStore', {
     },
     changeNotification(notificationEnabled) {
       this.notificationEnabled = notificationEnabled;
+    },
+    changeDarkMode(darkModeEnabled) {
+      this.darkModeEnabled = darkModeEnabled;
+    },
+    changeSound(soundEnabled) {
+      this.soundEnabled = soundEnabled;
     },
     decrementPomodoroLeft() {
       this.pomodorosLeft--;

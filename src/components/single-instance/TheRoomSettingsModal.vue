@@ -66,10 +66,20 @@
         ref="enableNotification"
         label="Enable notification"
         type="checkbox"
-        id="switchSound"
+        id="switchNotification"
         :is-checked="notificationEnabled"
         :color-state="colorState"
         v-if="shouldShowNotificationBtn"
+      />
+
+      <BaseSwitch
+        ref="enableSound"
+        label="Enable Sound"
+        type="checkbox"
+        id="switchSound"
+        :is-checked="soundEnabled"
+        :color-state="colorState"
+        @on-change="onChangeToggleSound"
       />
     </div>
     <BaseButtonPlayful
@@ -125,6 +135,8 @@ export default {
       shortBreak: roomSettingsStore.shortBreakLength,
       longBreak: roomSettingsStore.longBreakLength,
       notificationEnabled: roomSettingsStore.notificationEnabled,
+      soundEnabled: roomSettingsStore.notificationEnabled,
+      darkModeEnabled: roomSettingsStore.notificationEnabled,
       isBtnLoading: false,
       shouldShowSuccessAlert: false,
       shouldShowDangerAlert: false
@@ -212,6 +224,11 @@ export default {
       this.resetFields();
       this.$emit('onModalClose');
     },
+    onChangeToggleSound() {
+      const IS_SOUND_ENABLED = this.$refs.enableSound.$refs.input.checked;
+      this.soundEnabled = IS_SOUND_ENABLED;
+      this.roomSettingsStore.changeSound(IS_SOUND_ENABLED);
+    },
 
     /*
      * ===========
@@ -231,6 +248,7 @@ export default {
       this.$refs.pomodoroShortBreak.$refs.input.$refs.input.value = this.shortBreak;
       this.$refs.pomodoroLongBreak.$refs.input.$refs.input.value = this.longBreak;
       this.$refs.enableNotification.$refs.input.checked = this.notificationEnabled;
+      this.$refs.enableSound.$refs.input.checked = this.soundEnabled;
     },
 
     getSettingsFromStore() {
@@ -238,6 +256,8 @@ export default {
       this.pomodoros = this.roomSettingsStore.pomodoros;
       this.shortBreak = this.roomSettingsStore.shortBreakLength;
       this.longBreak = this.roomSettingsStore.longBreakLength;
+      this.notificationEnabled = this.roomSettingsStore.notificationEnabled;
+      this.soundEnabled = this.roomSettingsStore.soundEnabled;
     }
   },
   computed: {

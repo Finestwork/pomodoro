@@ -141,6 +141,7 @@ export default {
       &:checked {
         ~ label {
           background-color: map.get(main.$primary, 600);
+          &:focus,
           &:hover{
             background-color: darken(map.get(main.$primary, 600), 3%);
           }
@@ -150,8 +151,63 @@ export default {
 
     label {
       background-color: map.get(main.$primary, 300);
+      &:focus,
       &:hover{
         background-color: darken(map.get(main.$primary, 300), 10%);
+      }
+    }
+  }
+
+  &.short-break {
+    .switch__label {
+      color: map.get(main.$secondary, 900);
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      &:checked {
+        ~ label {
+          background-color: map.get(main.$secondary, 600);
+          &:focus,
+          &:hover{
+            background-color: darken(map.get(main.$secondary, 600), 3%);
+          }
+        }
+      }
+    }
+
+    label {
+      background-color: map.get(main.$secondary, 300);
+      &:focus,
+      &:hover{
+        background-color: darken(map.get(main.$secondary, 300), 10%);
+      }
+    }
+  }
+
+  &.long-break {
+    .switch__label {
+      color: map.get(main.$tertiary, 900);
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      &:checked {
+        ~ label {
+          background-color: map.get(main.$tertiary, 600);
+          &:focus,
+          &:hover{
+            background-color: darken(map.get(main.$tertiary, 600), 3%);
+          }
+        }
+      }
+    }
+
+    label {
+      background-color: map.get(main.$tertiary, 300);
+      &:focus,
+      &:hover{
+        background-color: darken(map.get(main.$tertiary, 300), 10%);
       }
     }
   }
