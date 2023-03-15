@@ -1,5 +1,5 @@
 <template>
-  <div :class="getRootClass">
+  <div :class="getRootClass" ref="root">
     <div class="homepage__container">
       <TheNavbar :color-state="currentColorState" />
 
@@ -71,6 +71,14 @@ export default {
   },
   mounted() {
     AudioHelper.init();
+    // Hide first the component until data from firestore are fully loaded
+    Object.assign(this.$refs.root.style, {
+      position: 'absolute',
+      top: '9999%',
+      left: '9999%'
+    });
+
+    // Check if dark mode is enabled
     const IS_DARK_MODE = localStorage.getItem('PomoTaskerDarkMode');
     if (IS_DARK_MODE !== null) document.body.classList.add('dark');
 
@@ -102,8 +110,12 @@ export default {
           this.roomSettingsStore.resetPomodoroLeft();
           this.roomSettingsStore.decrementPomodoroLeft();
         });
+
         this.getStoredPomodorosFromFirebase();
-        this.$emit('homepageReady');
+        setTimeout(() => {
+          this.$refs.root.style = null;
+          this.$emit('homepageReady');
+        }, 250); // Add delay
       })
       .catch(() => {
         useToast().error(
