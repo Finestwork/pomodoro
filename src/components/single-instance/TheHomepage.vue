@@ -164,6 +164,7 @@ export default {
         });
     },
     savePomodoro() {
+      // If recent pomodoro activities aren't fetched on page load
       if (!this.storedPomodoros.hasPomodoros) {
         PomodoroHelper.getAll()
           .then((res) => {

@@ -1,34 +1,24 @@
 <template>
-  <div class="pomo">
-    <Transition
-      @before-leave="beforeLeave"
-      @leave="onLeave"
-      @before-enter="beforeEnter"
-      @enter="onEnter"
-    >
-      <div class="pomo-label pomo-focus" v-if="shouldDisplayFire">
-        <span class="label__icon"><FireIcon /></span>
-        <span class="label__text">Be Productive</span>
-      </div>
-      <div class="pomo-label pomo-short-break" v-else-if="shouldDisplayShortBreak">
-        <span class="label__icon"><MugHotIcon /></span>
-        <span class="label__text">Short Break</span>
-      </div>
-      <div class="pomo-label pomo-long-break" v-else-if="shouldDisplayLongBreak">
-        <span class="label__icon"><SnoozeIcon /></span>
-        <span class="label__text">Long Break</span>
-      </div>
-    </Transition>
-  </div>
+  <TransitionGroup name="list" tag="div" class="pomo">
+    <div class="pomo-label pomo-focus" v-if="shouldDisplayFire">
+      <span class="label__icon"><FireIcon /></span>
+      <span class="label__text">Be Productive</span>
+    </div>
+    <div class="pomo-label pomo-short-break" v-else-if="shouldDisplayShortBreak">
+      <span class="label__icon"><MugHotIcon /></span>
+      <span class="label__text">Short Break</span>
+    </div>
+    <div class="pomo-label pomo-long-break" v-else-if="shouldDisplayLongBreak">
+      <span class="label__icon"><SnoozeIcon /></span>
+      <span class="label__text">Long Break</span>
+    </div>
+  </TransitionGroup>
 </template>
 
 <script>
 import FireIcon from '@/components/icons/Fire.vue';
 import MugHotIcon from '@/components/icons/MugHot.vue';
 import SnoozeIcon from '@/components/icons/Snooze.vue';
-
-// NPM
-import anime from 'animejs';
 
 export default {
   props: {
@@ -42,53 +32,6 @@ export default {
     FireIcon,
     MugHotIcon,
     SnoozeIcon
-  },
-  methods: {
-    beforeLeave(el) {
-      Object.assign(el.style, {
-        position: 'absolute'
-      });
-    },
-    onLeave(el, done) {
-      anime({
-        targets: el,
-        duration: 250,
-        easing: 'easeOutCirc',
-        top: '-20px',
-        rotateX: '90deg',
-        opacity: 0,
-        complete: () => {
-          el.style = null;
-          done();
-        }
-      });
-    },
-    beforeEnter(el) {
-      Object.assign(el.style, {
-        transform: 'translateY(10px)',
-        opacity: 0
-      });
-    },
-    onEnter(el, done) {
-      const { width, height } = el.getBoundingClientRect();
-      Object.assign(el.parentElement.style, {
-        width: `${width}px`,
-        height: `${height}px`
-      });
-
-      anime({
-        targets: el,
-        duration: 250,
-        easing: 'easeOutCirc',
-        translateY: 0,
-        opacity: 1,
-        complete: () => {
-          el.style = null;
-          el.parentElement.style = null;
-          done();
-        }
-      });
-    }
   },
   computed: {
     shouldDisplayFire() {
@@ -118,6 +61,9 @@ export default {
   perspective: 999px;
   transform-style: preserve-3d;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   &-label{
     display: inline-flex;
@@ -131,6 +77,7 @@ export default {
     .label {
       &__icon {
         display: flex;
+        flex-shrink: 0;
         @include margin.right((
             xsm: 7
         ));
@@ -147,6 +94,9 @@ export default {
 
       &__text {
         font-weight: 600;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
         @include font-size.responsive((
             xsm: map.get(major-second.$scale, 4)
         ));
@@ -197,5 +147,28 @@ export default {
       ));
     }
   }
+}
+
+.move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.15s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+}
+
+.list-enter-from {
+  transform: translateY(10px);
+}
+
+.list-leave-to {
+  transform: translateY(-10px);
+}
+
+.list-leave-active {
+  position: absolute;
 }
 </style>
